@@ -55,6 +55,10 @@ class TechDbService:
                 item.add(fx_py[i])
 
                 fx_cmd_dic[fx_eng[i]] = item
+
+        # syms = list(zip(fx_list_chinese, fx_eng, fx_py))
+        # {sym[1]: set(sym) | {s+' '+f for s in sym for f in freq_set} for sym in syms}
+
         return fx_cmd_dic
 
     # 把每日市场概况添加进数据库 -- 每天定时推送的市场概况数据

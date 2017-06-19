@@ -1,0 +1,172 @@
+
+fc_db_init.sql,0
+
+src/utils/sql_helper.py,560
+import pymysql.cursorspymysql3,27
+import pymysql.cursorscursors3,27
+import src.params.Parameters as parameterssrc5,53
+import src.params.Parameters as parametersparams5,53
+import src.params.Parameters as parametersparameters5,53
+class SqlHelper:SqlHelper8,101
+    def __init__(self):__init__9,119
+    def query(self, sql):query22,500
+    def update(self, sql):update30,709
+    def update_with_tx(self, sql_list):update_with_tx39,998
+    def get_max_id_in_tb(self, table_name):get_max_id_in_tb50,1397
+    def __del__(self):__del__54,1560
+
+src/utils/__init__.py,0
+
+src/fx_service/subsriber_service.py,315
+import src.main.gvars as gvarssrc3,25
+import src.main.gvars as gvarsmain3,25
+import src.main.gvars as gvarsgvars3,25
+class SubscriberService:SubscriberService6,58
+    def __init__(self):__init__7,83
+    def subscribe(self, user_id):subscribe11,168
+    def unsubscribe(self, user_id):unsubscribe19,541
+
+src/fx_service/user_service.py,872
+import timetime3,25
+import src.params.Parameters as parameterssrc5,38
+import src.params.Parameters as parametersparams5,38
+import src.params.Parameters as parametersparameters5,38
+import src.main.gvars as gvarssrc6,81
+import src.main.gvars as gvarsmain6,81
+import src.main.gvars as gvarsgvars6,81
+class UserService:UserService9,114
+    def __init__(self):__init__10,133
+    def get_all_users_in_db(self):get_all_users_in_db13,197
+    def get_all_user_ids_in_db(self):get_all_user_ids_in_db22,480
+    def get_all_remark_name_in_wx(self, friend_list):get_all_remark_name_in_wx33,820
+    def update_contact(self):update_contact44,1214
+    def __add_user_into_db_set_alias(self, user):__add_user_into_db_set_alias67,2293
+    def init_remark_name(self):init_remark_name93,3349
+    def get_all_subscriber_ids(self):get_all_subscriber_ids104,3930
+
+src/fx_service/tech_db_service.py,535
+import uuiduuid3,25
+import src.main.gvars as gvarssrc4,37
+import src.main.gvars as gvarsmain4,37
+import src.main.gvars as gvarsgvars4,37
+class TechDbService:TechDbService7,70
+    def __init__(self):__init__8,91
+    def get_fx_dic(self):get_fx_dic11,157
+    def get_fx_cmd_dic(self):get_fx_cmd_dic33,777
+    def add_daily_mkt(self, daily_mkt_list):add_daily_mkt62,1878
+    def get_last_daily_mkt_img_url(self):get_last_daily_mkt_img_url122,4255
+    def get_last_tech_single(self, req):get_last_tech_single134,4639
+
+src/fx_service/msg_service.py,1094
+import shutilshutil3,25
+import timetime4,39
+import uuiduuid5,51
+from multiprocessing.dummy import Pool as ThreadPoolThreadPool6,63
+import src.params.Parameters as parameterssrc8,117
+import src.params.Parameters as parametersparams8,117
+import src.params.Parameters as parametersparameters8,117
+import src.main.gvars as gvarssrc9,160
+import src.main.gvars as gvarsmain9,160
+import src.main.gvars as gvarsgvars9,160
+class MsgService:MsgService12,193
+    def __init__(self):__init__13,211
+    def get_fx_cmd_set(self):get_fx_cmd_set32,887
+    def __parse_msg(self, msg):__parse_msg59,1652
+    def __get_response_by_text_msg(self, msg):__get_response_by_text_msg138,4436
+    def __itchat_reply_save_into_db(self, msg):__itchat_reply_save_into_db142,4585
+    def receive_response(self, msg):receive_response180,6281
+    def send_mkt_msg_to_subscirbers(self):send_mkt_msg_to_subscirbers327,12787
+    def __do_send_daily_mkt_img(self, user_name):__do_send_daily_mkt_img387,15365
+    def receive_new_friend_request(self, msg):receive_new_friend_request392,15597
+
+src/fx_service/__init__.py,0
+
+src/main/main_controller.py,2155
+import datetimedatetime4,26
+import syssys5,42
+import threadingthreading6,53
+import timetime7,70
+import itchatitchat9,83
+import src.fx_service.msg_service as msg_servicesrc13,172
+import src.fx_service.msg_service as msg_servicefx_service13,172
+import src.fx_service.msg_service as msg_servicemsg_service13,172
+import src.fx_service.subsriber_service as subscriber_servicesrc14,221
+import src.fx_service.subsriber_service as subscriber_servicefx_service14,221
+import src.fx_service.subsriber_service as subscriber_servicesubscriber_service14,221
+import src.fx_service.tech_db_service as tech_servicesrc15,283
+import src.fx_service.tech_db_service as tech_servicefx_service15,283
+import src.fx_service.tech_db_service as tech_servicetech_service15,283
+import src.fx_service.user_service as user_servicesrc16,337
+import src.fx_service.user_service as user_servicefx_service16,337
+import src.fx_service.user_service as user_serviceuser_service16,337
+import src.params.Parameters as parameterssrc17,388
+import src.params.Parameters as parametersparams17,388
+import src.params.Parameters as parametersparameters17,388
+from src.utils import sql_helpersql_helper18,431
+import src.main.gvars as gvarssrc19,464
+import src.main.gvars as gvarsmain19,464
+import src.main.gvars as gvarsgvars19,464
+sql_helper = sql_helper.SqlHelper()sql_helper26,585
+sub_serv = subscriber_service.SubscriberService()sub_serv30,653
+user_serv = user_service.UserService()user_serv31,703
+friend_list = itchat.get_friends(update=True)friend_list43,1017
+frd_u2r = {}frd_u2r45,1093
+frd_r2u = {}frd_r2u46,1106
+me = {}me52,1250
+frd_dic = {}frd_dic55,1304
+tech_db_serv = tech_service.TechDbService()tech_db_serv63,1462
+fx_dic = tech_db_serv.get_fx_dic()fx_dic66,1541
+msg_serv = msg_service.MsgService()msg_serv69,1599
+def request_response(msg):request_response73,1704
+def add_friend(msg):add_friend97,2573
+def send_daily_mkt_msg():send_daily_mkt_msg101,2641
+threads = []threads127,3574
+t1 = threading.Thread(target=itchat.run, args=())t1128,3587
+t2 = threading.Thread(target=send_daily_mkt_msg, args=())t2132,3668
+
+src/main/gvars.py,348
+g = {}g1,0
+sql_helper = Nonesql_helper3,8
+itchat = Noneitchat4,26
+sub_serv = Nonesub_serv5,40
+user_serv = Noneuser_serv6,56
+msg_serv = Nonemsg_serv7,73
+tech_db_serv = Nonetech_db_serv8,89
+friend_list = Nonefriend_list10,110
+frd_u2r = Nonefrd_u2r11,129
+frd_r2u = Nonefrd_r2u12,144
+me = Noneme13,159
+fx_dic = Nonefx_dic14,169
+
+src/params/Parameters.py,2057
+SCHED_TIME = '2017/06/18 19:47:00'SCHED_TIME3,25
+SEND_MKT_MSG_THREAD_POOL_NUMBER = 10SEND_MKT_MSG_THREAD_POOL_NUMBER4,60
+REMARK_PREFIX = '_$fxuid$_'  # 好友的备注前缀REMARK_PREFIX5,97
+INIT_REMARK_NAME = '初始备注'INIT_REMARK_NAME6,150
+SET_REMARK_NAME_TIME_SLEEP_SECONDS = 10SET_REMARK_NAME_TIME_SLEEP_SECONDS7,184
+SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS8,224
+DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'DY_SUCCESS10,269
+TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'TD_SUCCESS11,375
+                  '回复1获取市场概况 2 获取xxx 3xxx'WELCOME_CONTENT15,660
+DY_MSG_TYPE = '1'  # 订阅DY_MSG_TYPE50,2491
+TD_MSG_TYPE = '2'  # 退订TD_MSG_TYPE51,2519
+TEXT_MSG_TYPE = '3'  # 文本消息TEXT_MSG_TYPE52,2547
+MKT_MSG_TYPE = '4'  # 请求全市场MKT_MSG_TYPE53,2583
+FX_PAIR_MSG_TYPE = '5'  # 单一品种的消息FX_PAIR_MSG_TYPE54,2621
+HELP_MSG_TYPE = '6'  # 帮助信息HELP_MSG_TYPE55,2669
+UNKONW_MSG_TYPE = '0'  # 未知消息UNKONW_MSG_TYPE56,2705
+TD_CMD = 'TD'TD_CMD58,2744
+DY_CMD = 'DY'DY_CMD59,2758
+MKT_CMD = '1'MKT_CMD60,2772
+SINGLE_FX_CMD = '2'SINGLE_FX_CMD61,2786
+DEFAULT_FREQ = 'H1'  # 默认技术指标周期DEFAULT_FREQ63,2807
+PROJECT_DIR = '/home/yiju/wxfx/'PROJECT_DIR75,3384
+DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'DAILY_MKT_IMG_DIR76,3417
+FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'FX_PAIR_IMG_DIR77,3467
+MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'MKT_IMG_DIR78,3515
+DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'DAILY_MKT_MSG_STORE_DIR79,3559
+REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'REPLY_FX_PAIR_STORE_DIR80,3622
+REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'REPLY_MKT_STORE_DIR81,3696
+APP_DIR = PROJECT_DIR + 'wxserver/src'APP_DIR82,3762
+SQL_USER_NAME = 'root'SQL_USER_NAME85,3856
+SQL_PASSWORD = 'jim'SQL_PASSWORD86,3879

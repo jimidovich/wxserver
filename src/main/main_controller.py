@@ -23,71 +23,55 @@ sys.path.append(parameters.APP_DIR)
 itchat.auto_login(True)
 
 
-sql_helper = sql_helper.SqlHelper()
-
 # 定义跨模块全局变量
-
-sub_serv = subscriber_service.SubscriberService()
-user_serv = user_service.UserService()
-
-gvars.sql_helper = sql_helper
+gvars.sql_helper = sql_helper.SqlHelper()
 gvars.itchat = itchat
-gvars.sub_serv = sub_serv
-gvars.user_serv = user_serv
+gvars.sub_serv = subscriber_service.SubscriberService()
+gvars.user_serv = user_service.UserService()
 
 ####################### 第一次运行，请执行下一行
-user_serv.init_remark_name()
+gvars.user_serv.init_remark_name()
 ######### 第一次运行#######################
-user_serv.update_contact()
 
-friend_list = itchat.get_friends(update=True)
+
+gvars.user_serv.update_contact()
+
+gvars.friend_list = itchat.get_friends(update=True)
 # username和remarkname互转
-frd_u2r = {}
-frd_r2u = {}
-for f in friend_list:
-    frd_u2r[f['UserName']] = f['RemarkName']
-    frd_r2u[f['RemarkName']] = f['UserName']
+gvars.frd_u2r = {}
+gvars.frd_r2u = {}
+for f in gvars.friend_list:
+    gvars.frd_u2r[f['UserName']] = f['RemarkName']
+    gvars.frd_r2u[f['RemarkName']] = f['UserName']
 
 # 机器人自己
-me = {}
-me['user_name'] = friend_list[0]['UserName']
+gvars.me = {}
+gvars.me['user_name'] = gvars.friend_list[0]['UserName']
 
-frd_dic = {}
-frd_dic['u2r'] = frd_u2r  # userName2remarkName
-frd_dic['r2u'] = frd_r2u
+gvars.tech_db_serv = tech_service.TechDbService()
+gvars.fx_dic = gvars.tech_db_serv.get_fx_dic()
 
-gvars.friend_list = friend_list
-gvars.frd_dic = frd_dic
-gvars.me = me
+gvars.msg_serv = msg_service.MsgService()
 
-tech_db_serv = tech_service.TechDbService()
-gvars.tech_db_serv = tech_db_serv
-
-fx_dic = tech_db_serv.get_fx_dic()
-gvars.fx_dic = fx_dic
-
-msg_serv = msg_service.MsgService()
-gvars.msg_serv = msg_serv
 
 @itchat.msg_register(itchat.content.TEXT)
 def request_response(msg):
-    frd_dic = gvars.frd_dic
     # 目前只允许客户发送文本消息
     msg['req_content'] = msg['Text']
     sender_user_name = msg['FromUserName']
 
     # 有人在用机器人的微信号主动向用户发消息
-    if me['user_name'] == sender_user_name:
+    if gvars.me['user_name'] == sender_user_name:
         pass
 
     # 机器人收到用户发送的消息
     else:
         print('收到消息' + msg['Text'])
-        msg['sender_id'] = int(frd_dic['u2r'][sender_user_name][9:])  # 数据库中用户id
+        msg['sender_id'] = int(gvars.frd_u2r[sender_user_name][9:])  # 数据库中用户id
         msg['sender_username'] = msg['FromUserName']  # wx的username
         msg['req_time'] = time.strftime('%Y-%m-%d %H:%M:%S',
                                         time.localtime(time.time()))
-        msg_serv.receive_response(msg)
+        gvars.msg_serv.receive_response(msg)
         # 查询出发送消息的人在数据库中的id
         print(msg)
 
@@ -95,7 +79,7 @@ def request_response(msg):
 # 收到添加好友请求
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
-    msg_serv.receive_new_friend_request(msg)
+    gvars.msg_serv.receive_new_friend_request(msg)
 
 
 def send_daily_mkt_msg():
@@ -109,7 +93,7 @@ def send_daily_mkt_msg():
             if now_str == sched_time:
                 started = 1
                 print('T=5s, exec...', now_str)
-                msg_serv.send_mkt_msg_to_subscirbers()
+                gvars.msg_serv.send_mkt_msg_to_subscirbers()
                 time.sleep(24 * 60 * 60)
                 # time.sleep(10)
             else:
@@ -118,7 +102,7 @@ def send_daily_mkt_msg():
         else:
             now_str = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
             print('T=5s, exec...', now_str)
-            msg_serv.send_mkt_msg_to_subscirbers()
+            gvars.msg_serv.send_mkt_msg_to_subscirbers()
             time.sleep(24 * 60 * 60)
             # time.sleep(10)
 

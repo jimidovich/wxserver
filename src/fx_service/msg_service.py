@@ -11,8 +11,6 @@ import src.main.gvars as gvars
 
 class MsgService:
     def __init__(self):
-        self.frd_u2r = gvars.frd_dic['u2r']
-        self.frd_r2u = gvars.frd_dic['r2u']
         self.fx_cmd_dic2 = gvars.tech_db_serv.get_fx_cmd_dic()
         self.fx_pair_cmd_set = self.get_fx_cmd_set()  # 获取外汇对的命令
         print('MsgService::init')

@@ -8,6 +8,7 @@ msg_serv = None
 tech_db_serv = None
 
 friend_list = None
-frd_dic = None
+frd_u2r = None
+frd_r2u = None
 me = None
 fx_dic = None
