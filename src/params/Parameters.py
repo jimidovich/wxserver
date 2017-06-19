@@ -10,9 +10,14 @@ SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
 DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'
 
-WELCOME_CONTENT = '欢迎使用xxx！已为您订阅外汇市场每日概况。' \
-                  '您将在每天早上8:00收到我们为您推送的外汇市场每日概况。' \
-                  '回复1获取市场概况 2 获取xxx 3xxx'
+WELCOME_CONTENT = """
+欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
+您将在每天早上8:00收到我们为您推送的外汇市场每日概况。
+回复1获取市场概况
+    h 获取帮助
+
+当前正在调试，出现异常情况请不必在意。
+"""
 
 MENU = '欢迎使用外汇小帮手\n\n' \
        '查询市场概况请回复1\n\n' \
@@ -84,3 +89,5 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
 SQL_PASSWORD = 'jim'
+
+SEND_NO_CHECK = True

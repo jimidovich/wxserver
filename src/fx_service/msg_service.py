@@ -140,39 +140,42 @@ class MsgService:
     def __itchat_reply_save_into_db(self, msg):
         # a. 调用itchat回复
         res_content = msg['res_content']
-        gvars.itchat.send(res_content, toUserName=msg['sender_username'])
-        # msg['replied'] = '1'
-        # b. 把回复的消息存入数据库
-        # 串行提交??
-        # 把收到的消息存入数据库
-
-        try:
-            # a. 插入主表
-            sql1 = "INSERT INTO t_request \
-                                (_user_id, _datetime, _content,\
-                                 _request_type, _replied, _ans_ok)\
-                                VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-            params1 = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                       msg['request_type'],
-                       msg['replied'], msg['ans_ok'])
-            gvars.sql_helper.cursor.execute(sql1 % params1)
-
-            # b. 得到主表最后一条记录的id
-            request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
-
-            # c. 从表
-            sql2 = "INSERT INTO t_reply_menu(_request_id," \
-                   "_content, _datetime) VALUES \
-                   (%d, '%s', NOW());"
-            params2 = (request_id, msg['res_content'])
-            gvars.sql_helper.cursor.execute(sql2 % params2)
-
-        except Exception as e:
-            gvars.sql_helper.connect.rollback()  # 事务回滚
-            print('MsgService::__itchat_reply_save_into_db:事务处理失败', e)
+        if parameters.SEND_NO_CHECK:
+            gvars.itchat.send(res_content, toUserName=msg['FromUserName'])
         else:
-            gvars.sql_helper.connect.commit()  # 事务提交
-            print('MsgService::__itchat_reply_save_into_db:事务处理成功')
+            gvars.itchat.send(res_content, toUserName=msg['sender_username'])
+            # msg['replied'] = '1'
+            # b. 把回复的消息存入数据库
+            # 串行提交??
+            # 把收到的消息存入数据库
+
+            try:
+                # a. 插入主表
+                sql1 = "INSERT INTO t_request \
+                                    (_user_id, _datetime, _content,\
+                                    _request_type, _replied, _ans_ok)\
+                                    VALUES (%d, '%s','%s', '%s', '%s', '%s');"
+                params1 = (msg['sender_id'], msg['req_time'], msg['req_content'],
+                        msg['request_type'],
+                        msg['replied'], msg['ans_ok'])
+                gvars.sql_helper.cursor.execute(sql1 % params1)
+
+                # b. 得到主表最后一条记录的id
+                request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
+
+                # c. 从表
+                sql2 = "INSERT INTO t_reply_menu(_request_id," \
+                    "_content, _datetime) VALUES \
+                    (%d, '%s', NOW());"
+                params2 = (request_id, msg['res_content'])
+                gvars.sql_helper.cursor.execute(sql2 % params2)
+
+            except Exception as e:
+                gvars.sql_helper.connect.rollback()  # 事务回滚
+                print('MsgService::__itchat_reply_save_into_db:事务处理失败', e)
+            else:
+                gvars.sql_helper.connect.commit()  # 事务提交
+                print('MsgService::__itchat_reply_save_into_db:事务处理成功')
 
     # 接收请求，解析消息，回复消息，操作数据库。
     def receive_response(self, msg):
@@ -231,35 +234,38 @@ class MsgService:
             # 如果相隔很近，则发送。否则，显示系统正在维护……???????
 
             # 调用itchat发送图片
-            gvars.itchat.send_image(img_url, msg['sender_username'])
-
-            try:
-                # a. 插入主表
-                sql = "INSERT INTO t_request \
-                        (_user_id, _datetime, _content,\
-                         _request_type, _replied, _ans_ok)\
-                        VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-                params = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                          msg['request_type'],
-                          msg['replied'], msg['ans_ok'])
-                gvars.sql_helper.cursor.execute(sql % params)
-
-                # b. 得到主表最后一条记录的id
-                request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
-
-                # c. 从表
-                sql = "INSERT INTO t_request_mkt (_request_id, " \
-                      "_reply_file_name)" \
-                      " VALUES (%d, '%s');"
-                params = (request_id, new_file_name)
-                gvars.sql_helper.cursor.execute(sql % params)
-
-            except Exception as e:
-                gvars.sql_helper.connect.rollback()  # 事务回滚
-                print('MsgService::receive_response:市场概况事务处理失败', e)
+            if parameters.SEND_NO_CHECK:
+                gvars.itchat.send_image(img_url, msg['FromUserName'])
             else:
-                gvars.sql_helper.connect.commit()  # 事务提交
-                print('MsgService::receive_response:市场概况事务处理成功')
+                gvars.itchat.send_image(img_url, msg['sender_username'])
+
+                try:
+                    # a. 插入主表
+                    sql = "INSERT INTO t_request \
+                            (_user_id, _datetime, _content,\
+                            _request_type, _replied, _ans_ok)\
+                            VALUES (%d, '%s','%s', '%s', '%s', '%s');"
+                    params = (msg['sender_id'], msg['req_time'], msg['req_content'],
+                            msg['request_type'],
+                            msg['replied'], msg['ans_ok'])
+                    gvars.sql_helper.cursor.execute(sql % params)
+
+                    # b. 得到主表最后一条记录的id
+                    request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
+
+                    # c. 从表
+                    sql = "INSERT INTO t_request_mkt (_request_id, " \
+                        "_reply_file_name)" \
+                        " VALUES (%d, '%s');"
+                    params = (request_id, new_file_name)
+                    gvars.sql_helper.cursor.execute(sql % params)
+
+                except Exception as e:
+                    gvars.sql_helper.connect.rollback()  # 事务回滚
+                    print('MsgService::receive_response:市场概况事务处理失败', e)
+                else:
+                    gvars.sql_helper.connect.commit()  # 事务提交
+                    print('MsgService::receive_response:市场概况事务处理成功')
 
         elif parameters.FX_PAIR_MSG_TYPE == request_type:
 
@@ -282,41 +288,44 @@ class MsgService:
             # 如果相隔很近，则发送。否则，显示系统正在维护……???????
 
             # 调用itchat发送图片
-            gvars.itchat.send_image(img_url, msg['sender_username'])
-
-            # 更新数据库，事务提交 （暂时没有串行执行）
-            # (1) 把用户的请求插入数据库
-            # (2) 查询最后一条请求的id
-            # (3) 把请求插入对某一外汇对的技术指标的请求记录表
-
-            try:
-                # a. 插入主表
-                sql = "INSERT INTO t_request \
-                                    (_user_id, _datetime, _content,\
-                                     _request_type, _replied, _ans_ok)\
-                                    VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-                params = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                          msg['request_type'],
-                          msg['replied'], msg['ans_ok'])
-                gvars.sql_helper.cursor.execute(sql % params)
-
-                # b. 得到主表最后一条记录的id
-                request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
-                fx_id = msg['fx_id']
-
-                # c. 从表
-                sql = "INSERT INTO t_req_res_fx_pair (_fx_id, " \
-                      "_ma_period, _request_id, _reply_file_name)" \
-                      " VALUES (%d, '%s' ,%d, '%s');"
-                params = (fx_id, freq, request_id, new_file_name)
-                gvars.sql_helper.cursor.execute(sql % params)
-
-            except Exception as e:
-                gvars.sql_helper.connect.rollback()  # 事务回滚
-                print('MsgService::receive_response:单一外汇事务处理失败', e)
+            if parameters.SEND_NO_CHECK:
+                gvars.itchat.send_image(img_url, msg['FromUserName'])
             else:
-                gvars.sql_helper.connect.commit()  # 事务提交
-                print('MsgService::receive_response:单一外汇事务处理成功')
+                gvars.itchat.send_image(img_url, msg['sender_username'])
+
+                # 更新数据库，事务提交 （暂时没有串行执行）
+                # (1) 把用户的请求插入数据库
+                # (2) 查询最后一条请求的id
+                # (3) 把请求插入对某一外汇对的技术指标的请求记录表
+
+                try:
+                    # a. 插入主表
+                    sql = "INSERT INTO t_request \
+                                        (_user_id, _datetime, _content,\
+                                        _request_type, _replied, _ans_ok)\
+                                        VALUES (%d, '%s','%s', '%s', '%s', '%s');"
+                    params = (msg['sender_id'], msg['req_time'], msg['req_content'],
+                            msg['request_type'],
+                            msg['replied'], msg['ans_ok'])
+                    gvars.sql_helper.cursor.execute(sql % params)
+
+                    # b. 得到主表最后一条记录的id
+                    request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
+                    fx_id = msg['fx_id']
+
+                    # c. 从表
+                    sql = "INSERT INTO t_req_res_fx_pair (_fx_id, " \
+                        "_ma_period, _request_id, _reply_file_name)" \
+                        " VALUES (%d, '%s' ,%d, '%s');"
+                    params = (fx_id, freq, request_id, new_file_name)
+                    gvars.sql_helper.cursor.execute(sql % params)
+
+                except Exception as e:
+                    gvars.sql_helper.connect.rollback()  # 事务回滚
+                    print('MsgService::receive_response:单一外汇事务处理失败', e)
+                else:
+                    gvars.sql_helper.connect.commit()  # 事务提交
+                    print('MsgService::receive_response:单一外汇事务处理成功')
 
         elif parameters.UNKONW_MSG_TYPE == request_type:
             msg['res_content'] = '暂时不知道回复什么……'
@@ -414,15 +423,6 @@ class MsgService:
         # 4. 更新RAM中的friend_list，frd_dic
         gvars.friend_list = gvars.itchat.get_friends(update=True)
         # username和remarkname互转
-        self.frd_u2r = {}
-        self.frd_r2u = {}
         for f in gvars.friend_list:
-            self.frd_u2r[f['UserName']] = f['RemarkName']
-            self.frd_r2u[f['RemarkName']] = f['UserName']
-
-        self.frd_dic = {}
-
-        self.frd_dic['u2r'] = self.frd_u2r  # userName2remarkName
-        self.frd_dic['r2u'] = self.frd_r2u
-
-        glob.set_value('frd_dic', self.frd_dic)
+            gvars.frd_u2r[f['UserName']] = f['RemarkName']
+            gvars.frd_r2u[f['RemarkName']] = f['UserName']

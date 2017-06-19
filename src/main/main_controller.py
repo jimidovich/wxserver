@@ -30,7 +30,7 @@ gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
 ####################### 第一次运行，请执行下一行
-gvars.user_serv.init_remark_name()
+# gvars.user_serv.init_remark_name()
 ######### 第一次运行#######################
 
 
@@ -89,19 +89,19 @@ def send_daily_mkt_msg():
         if 0 == started:
             # str(datetime.datetime.now())[0:19]
             now_str = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            print(sched_time, ' ', now_str)
+            # print(sched_time, ' ', now_str)
             if now_str == sched_time:
                 started = 1
-                print('T=5s, exec...', now_str)
+                # print('T=5s, exec...', now_str)
                 gvars.msg_serv.send_mkt_msg_to_subscirbers()
                 time.sleep(24 * 60 * 60)
                 # time.sleep(10)
             else:
-                print('sleep 1s')
+                # print('sleep 1s')
                 time.sleep(1)
         else:
             now_str = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            print('T=5s, exec...', now_str)
+            # print('T=5s, exec...', now_str)
             gvars.msg_serv.send_mkt_msg_to_subscirbers()
             time.sleep(24 * 60 * 60)
             # time.sleep(10)
