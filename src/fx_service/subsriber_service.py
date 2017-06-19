@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import src.fx_service.base_service as base_service
 import src.main.gvars as gvars
 
 
-class SubscriberService(base_service.BaseService):
+class SubscriberService:
     def __init__(self):
-        base_service.BaseService.__init__(self)
         print('SubscriberService::init')
 
     # 开启订阅

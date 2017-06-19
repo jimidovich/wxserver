@@ -5,14 +5,12 @@ import time
 import uuid
 from multiprocessing.dummy import Pool as ThreadPool
 
-import src.fx_service.base_service as base_service
 import src.params.Parameters as parameters
 import src.main.gvars as gvars
 
 
-class MsgService(base_service.BaseService):
+class MsgService:
     def __init__(self):
-        base_service.BaseService.__init__(self)
         self.frd_u2r = gvars.frd_dic['u2r']
         self.frd_r2u = gvars.frd_dic['r2u']
         self.fx_cmd_dic2 = gvars.tech_db_serv.get_fx_cmd_dic()

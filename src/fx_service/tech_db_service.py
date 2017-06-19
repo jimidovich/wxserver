@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
 
 import uuid
+import src.main.gvars as gvars
 
-import src.fx_service.base_service as base_service
 
-
-class TechDbService(base_service.BaseService):
+class TechDbService:
     def __init__(self):
-        base_service.BaseService.__init__(self)
         print('TechDbService::__init__')
 
     def get_fx_dic(self):
         sql = "SELECT * FROM t_fx;"
-        rs = self.sql_helper.query(sql)
+        rs = gvars.sql_helper.query(sql)
         fx_dic = {}
         fx_cmd_dic = self.get_fx_cmd_dic()
         cmd_keys = fx_cmd_dic.keys()
@@ -68,10 +66,10 @@ class TechDbService(base_service.BaseService):
             # a. 插入主表
             sql = "INSERT INTO t_daily_mkt (_datetime, _img_url) " \
                   "VALUES ( NOW(), '%s');" % (img_url)
-            self.sql_helper.cursor.execute(sql)
+            gvars.sql_helper.cursor.execute(sql)
 
             # b. 得到主表最后一条记录的id
-            _daily_mkt_id = self.sql_helper.get_max_id_in_tb('t_daily_mkt')
+            _daily_mkt_id = gvars.sql_helper.get_max_id_in_tb('t_daily_mkt')
 
             # c. 从表
             sql = ""
@@ -80,13 +78,13 @@ class TechDbService(base_service.BaseService):
                 sql += "INSERT INTO t_daily_mkt_detail ( _daily_mkt_id," \
                        " _fx_id, _mid, _prev_mid) VALUES " \
                        "(%d,%d,%.5f,%.5f);" % param
-            self.sql_helper.cursor.execute(sql)
+                gvars.sql_helper.cursor.execute(sql)
 
         except Exception as e:
-            self.sql_helper.connect.rollback()  # 事务回滚
+            gvars.sql_helper.connect.rollback()  # 事务回滚
             print('TechDbService::add_daily_mkt:事务处理失败', e)
         else:
-            self.sql_helper.connect.commit()  # 事务提交
+            gvars.sql_helper.connect.commit()  # 事务提交
             print('TechDbService::add_daily_mkt:事务处理成功')
 
     # # 这个函数干嘛的？从数据库中查询最新的每日市场概况？？？？
@@ -124,7 +122,7 @@ class TechDbService(base_service.BaseService):
     def get_last_daily_mkt_img_url(self):
 
         sql = "SELECT * FROM t_daily_mkt ORDER BY _id DESC LIMIT 0,1;"
-        rs = self.sql_helper.query(sql)
+        rs = gvars.sql_helper.query(sql)
         daily_mkt = {}
         daily_mkt['id'] = rs[0][0]
         daily_mkt['datetime'] = rs[0][1]
@@ -139,15 +137,5 @@ class TechDbService(base_service.BaseService):
               "WHERE _ma_period = '%s' AND f._id = t._id " \
               "AND _fx_id = %d ORDER BY t._id DESC LIMIT 0,1;"
         params = (req['freq'], req['fx_id'])
-        rs = self.sql_helper.query(sql % params)
+        rs = gvars.sql_helper.query(sql % params)
 
-    # 把单一品种的技术指标存入数据库
-    def add_tech_single(self, tech):
-        sql = "INSERT INTO t_tech_single (_fx_id, _mid, _change," \
-              " _change_percent, _datetime, _ma_period, _ma5, _ma10," \
-              " _ma20, _ma50, _ma100,_ema5, _ema10, _ema20, " \
-              "_ema50, _ema100, _macd, _rsi, _stoch, _adx, _cci," \
-              " _wr, _uo, _roc, _sar, _atr, _replied, _img_url) VALUES " \
-              "(1, 10.2, 0.2, 1, NOW(), 'm1', 10.1, 10.1, 10.1, " \
-              "10.1, 10.1, 10.1, 10.1, 10.1, 10.1, 10.1, 1.2, 70, 34," \
-              " 12, 34, 42, 5.2, 0.32, 13, 12, '1', 'xxx.jpg');"

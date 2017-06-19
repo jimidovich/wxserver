@@ -71,7 +71,7 @@ DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 # REPLY_MKT_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/mkt/'
 # APP_DIR = 'F:/source_files/quant/wechat/dev/src'
 
-PROJECT_DIR = '/home/yiju/wxfx/'
+PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
 DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
@@ -82,4 +82,4 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
+SQL_PASSWORD = 'root'

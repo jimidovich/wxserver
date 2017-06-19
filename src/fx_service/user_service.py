@@ -2,17 +2,13 @@
 
 import time
 
-import src.fx_service.base_service as base_service
 import src.params.Parameters as parameters
-from src.glob import glob
 import src.main.gvars as gvars
 
 
-class UserService(base_service.BaseService):
+class UserService:
     def __init__(self):
         print('__init__::UserService')
-        base_service.BaseService.__init__(self)
-        # self.sub_serv = glob.get_value('sub_serv')
 
     def get_all_users_in_db(self):
         print('UserService::get_all_users_in_db')
