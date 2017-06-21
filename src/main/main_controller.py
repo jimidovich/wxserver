@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
+import random
 import datetime
 import sys
 import threading
@@ -29,30 +29,13 @@ gvars.itchat = itchat
 gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
-####################### 第一次运行，请执行下一行
+########### 第一次运行，请执行下一行
 # gvars.user_serv.init_remark_name()
 ######### 第一次运行#######################
-
-
 gvars.user_serv.update_contact()
-
-gvars.friend_list = itchat.get_friends(update=True)
-# username和remarkname互转
-gvars.frd_u2r = {}
-gvars.frd_r2u = {}
-for f in gvars.friend_list:
-    gvars.frd_u2r[f['UserName']] = f['RemarkName']
-    gvars.frd_r2u[f['RemarkName']] = f['UserName']
-
-# 机器人自己
-gvars.me = {}
-gvars.me['user_name'] = gvars.friend_list[0]['UserName']
-
 gvars.tech_db_serv = tech_service.TechDbService()
 gvars.fx_dic = gvars.tech_db_serv.get_fx_dic()
-
 gvars.msg_serv = msg_service.MsgService()
-
 
 @itchat.msg_register(itchat.content.TEXT)
 def request_response(msg):
@@ -62,24 +45,79 @@ def request_response(msg):
 
     # 有人在用机器人的微信号主动向用户发消息
     if gvars.me['user_name'] == sender_user_name:
-        pass
+        # 把自己发的消息当作是自己主动给用户发送消息的入口
+        req_content = msg['Text']
+        if 'all mkt' == req_content:
+            print('向所有订阅用户发送市场消息')
+            gvars.msg_serv.send_mkt_msg_to_subscirbers()
+        elif 'all menu' == req_content:
+            print('向所有用户发送菜单')
+            msg = {}
+            msg['msg_type'] = parameters.SYS_MSG_TEXT
+            msg['content'] = parameters.MENU
+            gvars.msg_serv.send_msg_to_all_users(msg)
+        elif 'all h' == req_content:
+            print('向所有用户发送帮助')
+            msg = {}
+            msg['msg_type'] = parameters.SYS_MSG_TEXT
+            msg['content'] = parameters.HELP_MSG
+            gvars.msg_serv.send_msg_to_all_users(msg)
+        elif 'set rname begin' == req_content:
+            print('开启手动设置备注模式')
+            gvars.auto_add_friend = False
+            max_remark_id = 0  # 当前好友的最大编号
+            if len(gvars.frd_r2u_fx) > 0:
+                max_remark_id = int(max(gvars.frd_r2u_fx.keys())[9:])
+            reply_content = '新备注应该从%s开始' % \
+                            (parameters.REMARK_PREFIX + str(max_remark_id + 1))
+            print(reply_content)
+            # 自己收不到自己发的消息...
+            # gvars.itchat.send(reply_content,toUserName=sender_user_name)
+            gvars.itchat.send(reply_content, toUserName='filehelper')
+        elif 'set rname over' == req_content:
+            print('手动设置备注完毕')
+            old_remark_id_set = set(list(gvars.frd_r2u_fx.keys()))
+            gvars.user_serv.update_contact()
+            new_remark_id_set = set(list(gvars.frd_r2u_fx.keys())) \
+                                - old_remark_id_set
 
-    # 机器人收到用户发送的消息
+            # 1. 检查前缀是否错误
+            # 2. 检查是否重复
+            # 3. 检查是否是从rid_max+1号开始编号的
+            if len(new_remark_id_set) > 0:
+                for remark_name in new_remark_id_set:
+                    r_id = int(remark_name[9:])
+                    gvars.user_serv.add_user_into_db(r_id)
+
+                gvars.auto_add_friend = True
+                gvars.itchat.send('手动添加备注成功！', toUserName='filehelper')
+
+        else:
+            if len(req_content) > 10:
+                if 'all text ' == req_content[0:9]:
+                    content = req_content[9:]
+                    print('向所有用户发送文本消息:' + content)
+                    msg = {}
+                    msg['msg_type'] = parameters.SYS_MSG_TEXT
+                    msg['content'] = content
+                    gvars.msg_serv.send_msg_to_all_users(msg)
+
+    # 收到用户发送的消息
     else:
-        print('收到消息' + msg['Text'])
-        msg['sender_id'] = int(gvars.frd_u2r[sender_user_name][9:])  # 数据库中用户id
-        msg['sender_username'] = msg['FromUserName']  # wx的username
+        print('[收到消息] ' + msg['Text'])
+        msg['remark_name'] = gvars.frd_u2r_fx[sender_user_name]
+        msg['remark_id'] = int(msg['remark_name'][9:])  # 备注
+        msg['sender_id_in_db'] = gvars.frd_r2dbid[msg['remark_name']]  # 数据库中用户id
+        msg['sender_username'] = sender_user_name  # wx的username
         msg['req_time'] = time.strftime('%Y-%m-%d %H:%M:%S',
                                         time.localtime(time.time()))
         gvars.msg_serv.receive_response(msg)
-        # 查询出发送消息的人在数据库中的id
-        print(msg)
 
 
 # 收到添加好友请求
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
-    gvars.msg_serv.receive_new_friend_request(msg)
+    gvars.user_serv.receive_new_friend_request(msg)
 
 
 def send_daily_mkt_msg():
@@ -107,6 +145,14 @@ def send_daily_mkt_msg():
             # time.sleep(10)
 
 
+# 更新好友列表
+def update_contact_schedule_task():
+    while 1:
+        time.sleep(60 * 60)
+        print('更新通讯录')
+        gvars.user_serv.update_contact()
+
+
 # 开启多线程，每天早上8:00自动执行发送市场概况
 threads = []
 t1 = threading.Thread(target=itchat.run, args=())
@@ -116,6 +162,10 @@ t1.start()
 t2 = threading.Thread(target=send_daily_mkt_msg, args=())
 threads.append(t2)
 t2.start()
+
+t3 = threading.Thread(target=update_contact_schedule_task, args=())
+threads.append(t3)
+t3.start()
 
 
 

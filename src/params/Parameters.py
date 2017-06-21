@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 
-SCHED_TIME = '2017/06/18 19:47:00'
+ADMIN_ID = 1
+
+# 多线程发送任务的线程数量
 SEND_MKT_MSG_THREAD_POOL_NUMBER = 10
+SEND_SYS_MSG_THREAD_POOL_NUMBER = 10
+
+SCHED_TIME = '2017/06/18 19:47:00'
+
 REMARK_PREFIX = '_$fxuid$_'  # 好友的备注前缀
+TEST_DROPPED_FRIENDS_CHATROOM = 'TEST_DROPPED_FRIENDS_CHATROOM'
 INIT_REMARK_NAME = '初始备注'
 SET_REMARK_NAME_TIME_SLEEP_SECONDS = 10
 SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
+
 
 DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'
@@ -13,8 +21,7 @@ TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订
 WELCOME_CONTENT = """
 欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
 您将在每天早上8:00收到我们为您推送的外汇市场每日概况。
-回复1获取市场概况
-    h 获取帮助
+回复1获取市场概况，h获取帮助
 
 当前正在调试，出现异常情况请不必在意。
 """
@@ -67,6 +74,11 @@ SINGLE_FX_CMD = '2'
 
 DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 
+############### 系统消息
+SYS_MSG_TEXT = '1'
+SYS_MSG_IMG = '2'
+
+
 ############### qcy windows
 # DAILY_MKT_IMG_DIR = 'D:/GitHub/wxpic/output/'
 # FX_PAIR_IMG_DIR = 'D:/GitHub/wxpic/output/'
@@ -76,8 +88,8 @@ DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 # REPLY_MKT_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/mkt/'
 # APP_DIR = 'F:/source_files/quant/wechat/dev/src'
 
-# PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-PROJECT_DIR = '/home/yiju/wxfx/'
+PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
+# PROJECT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
@@ -88,6 +100,6 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
+SQL_PASSWORD = 'root'
 
-SEND_NO_CHECK = True
+SEND_NO_CHECK = False

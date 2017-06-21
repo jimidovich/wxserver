@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-
+import random
 import src.params.Parameters as parameters
 import src.main.gvars as gvars
 
@@ -10,60 +10,99 @@ class UserService:
     def __init__(self):
         print('__init__::UserService')
 
-    def get_all_users_in_db(self):
+    def get_all_users_in_db(self, admin_id):
         print('UserService::get_all_users_in_db')
-        sql = 'select * from t_user;'
+        sql = 'select * from t_user where _admin_id = %d;' % admin_id
         rs = gvars.sql_helper.query(sql)
         # if // rs 会不会是空？
         if len(rs) > 0:
-            for item in rs:
-                print(item)
+            user_list = []
+            for o in rs:
+                item = {}
+                item['id'] = o[0]
+                item['fx_acc'] = o[1]
+                item['remark_id'] = o[2]
+                item['admin_id'] = o[3]
+                item['subscriber'] = o[4]
+                item['exit'] = o[5]
+                user_list.append(item)
+            return user_list
 
-    def get_all_user_ids_in_db(self):
+    def get_all_user_ids_in_db(self, admin_id):
         print('UserService::get_all_user_ids_in_db')
-        sql = 'select _id from t_user;'
-        rs = gvars.sql_helper.query(sql)
+        sql = 'select _id from t_user where _admin_id =%d;'
+        rs = gvars.sql_helper.query(sql % admin_id)
         id_list = []
         if len(rs) > 0:
             for item in rs:
                 id_list.append(item[0])
-                print(item[0])
-        return id_list
-
-    def get_all_remark_name_in_wx(self, friend_list):
-        id_list = []
-        wx_user_name_list = []
-        for f in friend_list:
-            remark_name = f['RemarkName']  # 对应t_user中的_id
-            id_list.append(remark_name)
         return id_list
 
     # 每次启动本软件的时候，检查是否有新好友
-    # 并把已经删除的好友的订阅状态设置为 '0'
-
+    # 更新RAM中的好友列表，更新数据库中的好友列表
     def update_contact(self):
         print('UserService::update_contact')
 
-        # 1. 得到现在微信中所有用户的备注
-        # 难道不能及时更新???????????????
-        friend_list = gvars.itchat.get_friends(update=True)
-        # 如果该用户的备注名不是以 _$fxuid$_ 开始，就加入数据库，并为其修改备注名
-        for i in range(1, len(friend_list)):  # 排除自己
+        self.update_friend_in_RAM()
 
-            f = friend_list[i]
-            remark_name = f['RemarkName']
-            print('原备注:' + remark_name)
-            if parameters.REMARK_PREFIX != remark_name[0:9]:
-                user = {}
-                user['user_name'] = f['UserName']
-                new_remark_name = self.__add_user_into_db_set_alias(user)
-                print('新用户' + new_remark_name + '已添加')
-                time.sleep(parameters.SET_REMARK_NAME_TIME_SLEEP_SECONDS)
+        # 处理还没有处理备注的好友
+        max_remark_id = 0  # 当前好友的最大编号
+        if len(gvars.frd_r2u_fx) > 0:
+            max_remark_id = int(max(gvars.frd_r2u_fx.keys())[9:])
+
+        new_username_l = list(set(list(gvars.frd_u2r.keys())) \
+                              - set(list(gvars.frd_u2r_fx.keys())))
+
+        for i in range(len(new_username_l)):
+            username = new_username_l[i]
+            new_remark_id = max_remark_id + 1 + i
+            alias_res = gvars.itchat.set_alias(
+                username, parameters.REMARK_PREFIX + str(new_remark_id))
+            if '请求成功' == alias_res['BaseResponse']['ErrMsg']:
+                print('备注修改成功')
+                # 加入数据库
+                self.add_user_into_db(new_remark_id)
             else:
-                print('用户' + remark_name + '已存在')
+                print('备注修改失败')
+            time.sleep(int(round(random.uniform(2, 15))))
+
+        self.update_friend_in_RAM()
+        # 查询数据库中所有r_id
+        # 如果gvars.frd_r2u_fx.keys()有不存在与数据库中的id，插入数据库
+        user_id_in_db = self.get_all_user_ids_in_db(parameters.ADMIN_ID)
+        user_rname_in_db = set()
+        for uid in user_id_in_db:
+            if uid in gvars.frd_dbid2r.keys():
+                user_rname_in_db.add(gvars.frd_dbid2r[uid])
+        new_rname_to_add = set(gvars.frd_r2u_fx.keys()) - user_rname_in_db
+        for rname in new_rname_to_add:
+            rid = int(rname[9:])
+            self.add_user_into_db(rid)
+
+    # 添加好友
+    def add_user_into_db(self, remark_id):
+        try:
+            # a. 用户表
+            sql = "INSERT INTO t_user (_subscriber, _fx_acc," \
+                  "_remark_id,_admin_id, _exit, _enter_datetime," \
+                  "_exit_datetime) VALUES ('1','',%d,%d,'0',NOW(),NOW());"
+
+            param = (remark_id, parameters.ADMIN_ID)
+            gvars.sql_helper.cursor.execute(sql % param)
+
+            # b. 得到主表最后一条记录的id
+            user_id = gvars.sql_helper.get_max_id_in_tb('t_user')
+            gvars.sub_serv.subscribe(user_id)
+
+        except Exception as e:
+            gvars.sql_helper.connect.rollback()  # 事务回滚
+            print('UserService::add_user_into_db:事务处理失败', e)
+        else:
+            gvars.sql_helper.connect.commit()  # 事务提交
+            print('UserService::add_user_into_db:事务处理成功')
+
 
     # 把新用户添加进数据库，同时设置备注名
-    # 没有开启事务！！！！！！！ -_-!!
     def __add_user_into_db_set_alias(self, user):
         print('UserService::__add_user_into_db_set_alias')
         sql = "INSERT INTO t_user (_subscriber, _fx_acc,\
@@ -90,15 +129,16 @@ class UserService:
 
         return new_remark_name
 
+    # 初始化所有备注
     def init_remark_name(self):
         # 1. 得到现在微信中所有用户的备注
-        friend_list = gvars.itchat.get_friends(update=True)
+        gvars.friend_list = gvars.itchat.get_friends(update=True)[1:]
         # 如果该用户的备注名不是以 _$fxuid$_ 开始，就加入数据库，并为其修改备注名
-        for f in friend_list:
+        for f in gvars.friend_list:
             user_name = f['UserName']
             print(user_name + '初始化备注')
             gvars.itchat.set_alias(user_name, parameters.INIT_REMARK_NAME)
-            time.sleep(parameters.SET_REMARK_NAME_TIME_SLEEP_SECONDS)
+            time.sleep(int(round(random.uniform(2, 15))))
 
     # 从数据库中查询出当前订阅的所有用户
     def get_all_subscriber_ids(self):
@@ -109,3 +149,58 @@ class UserService:
             for item in rs:
                 id_list.append(item[0])
         return id_list
+
+    # 收到别人的添加好友请求
+    def receive_new_friend_request(self, msg):
+
+        if gvars.auto_add_friend:  # 自动添加好友
+            # 1. 微信本身添加该好友
+            gvars.itchat.add_friend(**msg['Text'])  # 该操作会自动将新好友的消息录入，不需要重载通讯录
+            # 2. 更新数据库中好友表，订阅表
+            username = msg['RecommendInfo']['UserName']
+            self.update_contact()
+            # 3. 向好友发送welcome的消息
+            gvars.itchat.send_msg(parameters.WELCOME_CONTENT, username)
+        else:  # 手动添加好友
+            pass
+
+    def update_frd_dic_by_frd_list(self, friend_list):
+        users_list = self.get_all_users_in_db(parameters.ADMIN_ID)
+        frd_r2dbid = {}
+        frd_dbid2r = {}
+        frd_u2r_fx = {}  # 已经设置好备注的，有后缀fx
+        frd_r2u_fx = {}
+        frd_u2r = {}  # 所有微信好友
+        frd_r2u = {}
+        for f in friend_list:
+            if len(f['RemarkName']) > 9:
+                if parameters.REMARK_PREFIX == f['RemarkName'][0:9]:
+                    frd_u2r_fx[f['UserName']] = f['RemarkName']
+                    frd_r2u_fx[f['RemarkName']] = f['UserName']
+                    for u in users_list:
+                        if u['remark_id'] == int(f['RemarkName'][9:]):
+                            frd_r2dbid[f['RemarkName']] = u['id']
+
+            frd_u2r[f['UserName']] = f['RemarkName']
+            frd_r2u[f['RemarkName']] = f['UserName']
+
+        for k, v in frd_r2dbid.items():
+            frd_dbid2r[v] = k
+
+        gvars.frd_r2u = frd_r2u
+        gvars.frd_u2r = frd_u2r
+        gvars.frd_r2u_fx = frd_r2u_fx
+        gvars.frd_u2r_fx = frd_u2r_fx
+        gvars.frd_r2dbid = frd_r2dbid
+        gvars.frd_dbid2r = frd_dbid2r
+
+    def update_friend_in_RAM(self):
+
+        friend_list = gvars.itchat.get_friends(update=True)
+        gvars.mix_friend_list = friend_list[1:]  # 含有 现有的 + 删除的
+        gvars.me = {}
+        gvars.me['user_name'] = friend_list[0]['UserName']
+
+        gvars.friend_list = gvars.mix_friend_list  # 现在含有 现有的 + 删除的
+
+        self.update_frd_dic_by_frd_list(gvars.friend_list)
