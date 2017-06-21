@@ -71,7 +71,7 @@ INSERT INTO t_fx (_name, _c1, _c2, _c1_chinese, _c2_chinese, _css_class)       V
 DROP TABLE IF EXISTS t_daily_mkt;
 CREATE TABLE t_daily_mkt(
 _id INT PRIMARY KEY AUTO_INCREMENT,
-_datetime DATETIME UNIQUE NOT NULL,
+_datetime DATETIME NOT NULL,
 _file_name CHAR(32) UNIQUE NOT NULL
 );
 
@@ -98,7 +98,7 @@ DROP TABLE IF EXISTS t_request;
 CREATE TABLE t_request(
 _id INT PRIMARY KEY AUTO_INCREMENT,
 _user_id INT NOT NULL,
-_datetime DATETIME UNIQUE NOT NULL,
+_datetime DATETIME NOT NULL,
 _content TEXT NOT NULL, -- 文本内容
 _request_type CHAR(1),
 _replied CHAR(1),
@@ -114,7 +114,7 @@ CREATE TABLE t_reply_menu(
 _id INT PRIMARY KEY AUTO_INCREMENT,
 _request_id INT UNIQUE NOT NULL,
 _content TEXT NOT NULL,
-_datetime DATETIME UNIQUE NOT NULL,
+_datetime DATETIME NOT NULL,
 CONSTRAINT _menu_request_id_FK FOREIGN KEY(_request_id) 
 REFERENCES t_request(_id)
 );
@@ -151,7 +151,7 @@ DROP TABLE IF EXISTS t_sys_msg;
 CREATE TABLE t_sys_msg(
 _id INT PRIMARY KEY AUTO_INCREMENT,
 _type CHAR(1) NOT NULL,
-_datetime DATETIME NOT NULL UNIQUE,
+_datetime DATETIME NOT NULL,
 _content TEXT,
 _admin_id INT NOT NULL
 );

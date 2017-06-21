@@ -339,8 +339,8 @@ class MsgService:
         subscriber_wx_username_list = []
         for u_id in subscriber_id_list:
             remark_name = parameters.REMARK_PREFIX + str(u_id)
-            if remark_name in self.frd_r2u.keys():
-                subscriber_wx_username_list.append(self.frd_r2u[remark_name])
+            if remark_name in gvars.frd_r2u.keys():
+                subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
 
         # 2 & 3. 把该消息存入数据库的 t_daily_mkt表 和 t_daily_mkt_detail表
         # 把刚刚发送市场概况的这条消息存入数据库

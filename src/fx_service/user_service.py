@@ -15,8 +15,8 @@ class UserService:
         sql = 'select * from t_user where _admin_id = %d;' % admin_id
         rs = gvars.sql_helper.query(sql)
         # if // rs 会不会是空？
+        user_list = []
         if len(rs) > 0:
-            user_list = []
             for o in rs:
                 item = {}
                 item['id'] = o[0]
@@ -26,7 +26,7 @@ class UserService:
                 item['subscriber'] = o[4]
                 item['exit'] = o[5]
                 user_list.append(item)
-            return user_list
+        return user_list
 
     def get_all_user_ids_in_db(self, admin_id):
         print('UserService::get_all_user_ids_in_db')
@@ -177,9 +177,10 @@ class UserService:
                 if parameters.REMARK_PREFIX == f['RemarkName'][0:9]:
                     frd_u2r_fx[f['UserName']] = f['RemarkName']
                     frd_r2u_fx[f['RemarkName']] = f['UserName']
-                    for u in users_list:
-                        if u['remark_id'] == int(f['RemarkName'][9:]):
-                            frd_r2dbid[f['RemarkName']] = u['id']
+                    if len(users_list) > 0:
+                        for u in users_list:
+                            if u['remark_id'] == int(f['RemarkName'][9:]):
+                                frd_r2dbid[f['RemarkName']] = u['id']
 
             frd_u2r[f['UserName']] = f['RemarkName']
             frd_r2u[f['RemarkName']] = f['UserName']

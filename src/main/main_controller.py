@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import random
 import datetime
 import sys
 import threading
 import time
-
 import itchat
 from itchat.content import *
 
@@ -19,8 +17,8 @@ from src.utils import sql_helper
 import src.main.gvars as gvars
 sys.path.append(parameters.APP_DIR)
 
-# itchat.auto_login(False)
-itchat.auto_login(True)
+# itchat.auto_login(hotReload=False)
+itchat.auto_login(enableCmdQR=2, hotReload=False)
 
 
 # 定义跨模块全局变量
@@ -29,16 +27,18 @@ gvars.itchat = itchat
 gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
-########### 第一次运行，请执行下一行
-gvars.user_serv.init_remark_name()
-######### 第一次运行#######################
+if parameters.NEED_INIT_REMARK_NAME:
+    gvars.user_serv.init_remark_name()
+
 gvars.user_serv.update_contact()
 gvars.tech_db_serv = tech_service.TechDbService()
 gvars.fx_dic = gvars.tech_db_serv.get_fx_dic()
 gvars.msg_serv = msg_service.MsgService()
 
+
 @itchat.msg_register(itchat.content.TEXT)
 def request_response(msg):
+    print('got msg:', msg['Text'])
     # 目前只允许客户发送文本消息
     msg['req_content'] = msg['Text']
     sender_user_name = msg['FromUserName']
@@ -50,6 +50,12 @@ def request_response(msg):
         if 'all mkt' == req_content:
             print('向所有订阅用户发送市场消息')
             gvars.msg_serv.send_mkt_msg_to_subscirbers()
+        elif 'all welcome' == req_content:
+            print('向所有用户发送welcome')
+            msg = {}
+            msg['msg_type'] = parameters.SYS_MSG_TEXT
+            msg['content'] = parameters.WELCOME_CONTENT
+            gvars.msg_serv.send_msg_to_all_users(msg)
         elif 'all menu' == req_content:
             print('向所有用户发送菜单')
             msg = {}
@@ -62,6 +68,9 @@ def request_response(msg):
             msg['msg_type'] = parameters.SYS_MSG_TEXT
             msg['content'] = parameters.HELP_MSG
             gvars.msg_serv.send_msg_to_all_users(msg)
+        elif 'update friend' == req_content:
+            print('立即更新用户信息')
+            gvars.user_serv.update_contact()
         elif 'set rname begin' == req_content:
             print('开启手动设置备注模式')
             gvars.auto_add_friend = False
@@ -76,21 +85,21 @@ def request_response(msg):
             gvars.itchat.send(reply_content, toUserName='filehelper')
         elif 'set rname over' == req_content:
             print('手动设置备注完毕')
-            old_remark_id_set = set(list(gvars.frd_r2u_fx.keys()))
+            # old_remark_id_set = set(list(gvars.frd_r2u_fx.keys()))
             gvars.user_serv.update_contact()
-            new_remark_id_set = set(list(gvars.frd_r2u_fx.keys())) \
-                                - old_remark_id_set
+            # new_remark_id_set = set(list(gvars.frd_r2u_fx.keys())) \
+            #                     - old_remark_id_set
+            #
+            # # 1. 检查前缀是否错误
+            # # 2. 检查是否重复
+            # # 3. 检查是否是从rid_max+1号开始编号的
+            # if len(new_remark_id_set) > 0:
+            #     for remark_name in new_remark_id_set:
+            #         r_id = int(remark_name[9:])
+            #         gvars.user_serv.add_user_into_db(r_id)
 
-            # 1. 检查前缀是否错误
-            # 2. 检查是否重复
-            # 3. 检查是否是从rid_max+1号开始编号的
-            if len(new_remark_id_set) > 0:
-                for remark_name in new_remark_id_set:
-                    r_id = int(remark_name[9:])
-                    gvars.user_serv.add_user_into_db(r_id)
-
-                gvars.auto_add_friend = True
-                gvars.itchat.send('手动添加备注成功！', toUserName='filehelper')
+            gvars.auto_add_friend = True
+            gvars.itchat.send('手动添加备注成功！', toUserName='filehelper')
 
         else:
             if len(req_content) > 10:
@@ -120,38 +129,25 @@ def add_friend(msg):
     gvars.user_serv.receive_new_friend_request(msg)
 
 
+# 推送每天的市场概况
 def send_daily_mkt_msg():
-    sched_time = parameters.SCHED_TIME
-    started = 0
     while 1:
-        if 0 == started:
-            # str(datetime.datetime.now())[0:19]
-            now_str = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            # print(sched_time, ' ', now_str)
-            if now_str == sched_time:
-                started = 1
-                # print('T=5s, exec...', now_str)
+        now = datetime.datetime.now()
+        if now.weekday() in [0, 6]:  # 非工作日:
+            pass
+        else:  # 工作日
+            now_str = now.strftime('%Y/%m/%d %H:%M:%S')[11:]
+            # print(now_str)
+            if now_str in parameters.SCHED_TIME_LIST:  # 发送
                 gvars.msg_serv.send_mkt_msg_to_subscirbers()
-                time.sleep(24 * 60 * 60)
-                # time.sleep(10)
-            else:
-                # print('sleep 1s')
-                time.sleep(1)
-        else:
-            now_str = datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
-            # print('T=5s, exec...', now_str)
-            gvars.msg_serv.send_mkt_msg_to_subscirbers()
-            time.sleep(24 * 60 * 60)
-            # time.sleep(10)
-
+        time.sleep(1)
 
 # 更新好友列表
 def update_contact_schedule_task():
     while 1:
-        time.sleep(60 * 60)
-        print('更新通讯录')
+        time.sleep(10 * 60)
+        print('每隔10分钟更新一次通讯录')
         gvars.user_serv.update_contact()
-
 
 # 开启多线程，每天早上8:00自动执行发送市场概况
 threads = []
@@ -166,7 +162,6 @@ t2.start()
 t3 = threading.Thread(target=update_contact_schedule_task, args=())
 threads.append(t3)
 t3.start()
-
 
 
 # msg1 = {'MsgId': '7841120077399435007',

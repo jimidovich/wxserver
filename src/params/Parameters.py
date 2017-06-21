@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 ADMIN_ID = 1
+NEED_INIT_REMARK_NAME = False  # 是否需要先初始化所有联系人的备注
+
+SCHED_TIME_LIST = ['08:00:00', '20:00:00']
 
 # 多线程发送任务的线程数量
 SEND_MKT_MSG_THREAD_POOL_NUMBER = 10
 SEND_SYS_MSG_THREAD_POOL_NUMBER = 10
 
-SCHED_TIME = '2017/06/18 19:47:00'
-
+INIT_REMARK_NAME = '初始备注'
 REMARK_PREFIX = '_$fxuid$_'  # 好友的备注前缀
 TEST_DROPPED_FRIENDS_CHATROOM = 'TEST_DROPPED_FRIENDS_CHATROOM'
-INIT_REMARK_NAME = '初始备注'
 SET_REMARK_NAME_TIME_SLEEP_SECONDS = 10
 SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
 
@@ -24,8 +25,7 @@ WELCOME_CONTENT = """欢迎使用外汇跟踪机器人！已为您订阅外汇�
 1 获取即时市场概况
 h 获取帮助
 
-当前正在调试，出现异常情况请不必在意。
-"""
+当前正在调试，出现异常情况请不必在意。"""
 
 MENU = """欢迎使用外汇小帮手
 查询市场概况请回复1
@@ -41,8 +41,7 @@ MENU = """欢迎使用外汇小帮手
 查询日K线将m替换为d，小时线为h，空缺默认为小时
 
 更多帮助请回复 h
-人工服务请拨打 021-xxxxxxxx
-"""
+人工服务请拨打 021-xxxxxxxx"""
 
 HELP_MSG = """==外汇小帮手使用说明==
 
@@ -52,7 +51,7 @@ HELP_MSG = """==外汇小帮手使用说明==
 货币: 可输入货币代号、拼音首字母或第一个汉字
 周期: 可输入m(分),h(时),d(日)
 
-例子: 回复以下命令均可查询欧元兑美元（小时）
+例子: 回复以下命令均可查询欧元兑美元(小时）
 o h、e h、eur h、eurusd h、欧 h
 
 ==目前支持的货币有==
@@ -63,8 +62,7 @@ o h、e h、eur h、eurusd h、欧 h
 新西兰元兑美元:   x
 美元兑加元:           j
 
-人工服务请拨打 021-xxxxxxxx'
-"""
+人工服务请拨打 021-xxxxxxxx"""
 
 # MENU =  '请回复相应指令\n\n1 市场概况\n\n ==分钟指标==\n' \
 #         '21 欧元/美元\n22 英镑/美元\n23 澳大利亚元/美元\n24 新西兰元/美元\n' \
@@ -115,5 +113,7 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
 SQL_PASSWORD = 'jim'
+DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
+# DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 
 SEND_NO_CHECK = False

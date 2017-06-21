@@ -13,7 +13,7 @@ class SqlHelper:
             port=3306,
             user=parameters.SQL_USER_NAME,
             passwd=parameters.SQL_PASSWORD,
-            db='fx_db',
+            db=parameters.DATABASE_NAME,
             charset='utf8'
         )
         self.connect = connect
