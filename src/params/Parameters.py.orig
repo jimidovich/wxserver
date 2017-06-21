@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 ADMIN_ID = 1
 
 # 多线程发送任务的线程数量
@@ -17,6 +18,12 @@ SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
 DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'
 
+<<<<<<< HEAD
+WELCOME_CONTENT = """
+欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
+您将在每天早上8:00收到我们为您推送的外汇市场每日概况。
+回复1获取市场概况，h获取帮助
+=======
 WELCOME_CONTENT = """欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
 您将在每天早晚8:00收到我们为您推送的外汇市场每日概况。
 
@@ -103,8 +110,8 @@ SYS_MSG_IMG = '2'
 # REPLY_MKT_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/mkt/'
 # APP_DIR = 'F:/source_files/quant/wechat/dev/src'
 
-# PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-PROJECT_DIR = '/home/yiju/wxfx/'
+PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
+# PROJECT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
@@ -115,6 +122,6 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
+SQL_PASSWORD = 'root'
 
 SEND_NO_CHECK = False

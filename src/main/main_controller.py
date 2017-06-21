@@ -30,7 +30,7 @@ gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
 ########### 第一次运行，请执行下一行
-# gvars.user_serv.init_remark_name()
+gvars.user_serv.init_remark_name()
 ######### 第一次运行#######################
 gvars.user_serv.update_contact()
 gvars.tech_db_serv = tech_service.TechDbService()
