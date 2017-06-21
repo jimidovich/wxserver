@@ -155,9 +155,9 @@ class MsgService:
                                     (_user_id, _datetime, _content,\
                                     _request_type, _replied, _ans_ok)\
                                     VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-                params1 = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                        msg['request_type'],
-                        msg['replied'], msg['ans_ok'])
+                params1 = (msg['sender_id_in_db'], msg['req_time'], msg['req_content'],
+                           msg['request_type'],
+                           msg['replied'], msg['ans_ok'])
                 gvars.sql_helper.cursor.execute(sql1 % params1)
 
                 # b. 得到主表最后一条记录的id
@@ -182,7 +182,7 @@ class MsgService:
         # 0. 解析消息
         self.__parse_msg(msg)
 
-        sender_id = msg['sender_id']
+        sender_id_in_db = msg['sender_id_in_db']
         request_type = msg['request_type']
 
         if parameters.HELP_MSG_TYPE == request_type:
@@ -200,7 +200,7 @@ class MsgService:
         # 订阅
         elif parameters.DY_MSG_TYPE == request_type:
             # a. 修改数据库（订阅状态）
-            gvars.sub_serv.subscribe(sender_id)
+            gvars.sub_serv.subscribe(sender_id_in_db)
             # b. 回复消息 & 把回复的消息存入数据库
             res_content = parameters.DY_SUCCESS
             msg['res_content'] = res_content
@@ -209,7 +209,7 @@ class MsgService:
         # 退订
         elif parameters.TD_MSG_TYPE == request_type:
             # a. 修改数据库（退订状态）
-            gvars.sub_serv.unsubscribe(sender_id)
+            gvars.sub_serv.unsubscribe(sender_id_in_db)
             # b. 回复消息 & 把回复的消息存入数据库
             res_content = parameters.TD_SUCCESS
             msg['res_content'] = res_content
@@ -245,9 +245,9 @@ class MsgService:
                             (_user_id, _datetime, _content,\
                             _request_type, _replied, _ans_ok)\
                             VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-                    params = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                            msg['request_type'],
-                            msg['replied'], msg['ans_ok'])
+                    params = (msg['sender_id_in_db'], msg['req_time'], msg['req_content'],
+                              msg['request_type'],
+                              msg['replied'], msg['ans_ok'])
                     gvars.sql_helper.cursor.execute(sql % params)
 
                     # b. 得到主表最后一条记录的id
@@ -304,9 +304,9 @@ class MsgService:
                                         (_user_id, _datetime, _content,\
                                         _request_type, _replied, _ans_ok)\
                                         VALUES (%d, '%s','%s', '%s', '%s', '%s');"
-                    params = (msg['sender_id'], msg['req_time'], msg['req_content'],
-                            msg['request_type'],
-                            msg['replied'], msg['ans_ok'])
+                    params = (msg['sender_id_in_db'], msg['req_time'], msg['req_content'],
+                              msg['request_type'],
+                              msg['replied'], msg['ans_ok'])
                     gvars.sql_helper.cursor.execute(sql % params)
 
                     # b. 得到主表最后一条记录的id
@@ -330,7 +330,7 @@ class MsgService:
         elif parameters.UNKONW_MSG_TYPE == request_type:
             msg['res_content'] = '暂时不知道回复什么……'
 
-    # 每天早上定时向所有订阅用户发送市场概况
+    # 向所有订阅用户发送市场概况
     def send_mkt_msg_to_subscirbers(self):
 
         # 1. 查询当前所有的订阅用户
@@ -355,7 +355,7 @@ class MsgService:
         self.mkt_img_url = img_url
 
         try:
-            # a. 哪一条市场概况的
+            # a. 哪一条市场概况
             sql = "INSERT INTO t_daily_mkt (_datetime," \
                   " _file_name) VALUES (NOW(), '%s');" % (new_file_name)
             gvars.sql_helper.cursor.execute(sql)
@@ -379,50 +379,36 @@ class MsgService:
             print('MsgService::send_mkt_msg_to_subscirbers:事务处理成功')
 
         # 4. 多线程向所有订阅用户发送市场概况
-        # Make the Pool of workers
         thread_pool_num = parameters.SEND_MKT_MSG_THREAD_POOL_NUMBER
         pool = ThreadPool(thread_pool_num)
-
-        # Open the urls in their own threads
-        # and return the results
         pool.map(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
-
-        # close the pool and wait for the work to finish
         pool.close()
         pool.join()
 
+    # 向所有用户发送消息
+    def send_msg_to_all_users(self, msg):
+        msg_type = msg['msg_type']
+        if parameters.SYS_MSG_TEXT == msg_type:
+            print('发送文本消息')
+            content = msg['content']
+            self.sys_msg = msg
+            username_list = list(gvars.frd_u2r.keys())
+
+            # 把系统消息记录到数据库中
+            sql = "INSERT INTO t_sys_msg (_type, _datetime, _content,_admin_id) " \
+                  "VALUES ('%s',NOW(),'%s',%d);" % (parameters.SYS_MSG_TEXT, content, parameters.ADMIN_ID)
+            gvars.sql_helper.update(sql)
+
+            # 多线程向所有用户发送文本消息
+            thread_pool_num = parameters.SEND_SYS_MSG_THREAD_POOL_NUMBER
+            pool = ThreadPool(thread_pool_num)
+            pool.map(self.__do_send_sys_txt_msg, username_list)
+            pool.close()
+            pool.join()
+
+    def __do_send_sys_txt_msg(self, wx_user_name):
+        gvars.itchat.send_msg(self.sys_msg['content'], wx_user_name)
+
     def __do_send_daily_mkt_img(self, user_name):
-        time.sleep(parameters.SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS)
         gvars.itchat.send_image(self.mkt_img_url, toUserName=user_name)
 
-    # 收到别人的添加好友请求
-    def receive_new_friend_request(self, msg):
-        # 0. 收到好友请求
-
-        # 1. 添加该好友
-        gvars.itchat.add_friend(**msg['Text'])  # 该操作会自动将新好友的消息录入，不需要重载通讯录
-
-        # 2. 更新数据库中好友表，订阅表
-        sql = "INSERT INTO t_user (_subscriber, _fx_acc,\
-                 _exit, _enter_datetime, _exit_datetime)\
-                VALUES ('1','','0',NOW(),NOW());"
-        gvars.sql_helper.update(sql)
-        max_id = gvars.sql_helper.get_max_id_in_tb('t_user')
-
-        # 3. 修改微信联系人的备注
-        new_remark_name = parameters.REMARK_PREFIX + str(max_id)
-        wx_username = msg['RecommendInfo']['UserName']
-
-        # 5. 向好友发送welcome的消息
-        gvars.itchat.send_msg(parameters.WELCOME_CONTENT, wx_username)
-        # time.sleep(10)
-        gvars.itchat.set_alias(wx_username, new_remark_name)
-
-        time.sleep(5)
-
-        # 4. 更新RAM中的friend_list，frd_dic
-        gvars.friend_list = gvars.itchat.get_friends(update=True)
-        # username和remarkname互转
-        for f in gvars.friend_list:
-            gvars.frd_u2r[f['UserName']] = f['RemarkName']
-            gvars.frd_r2u[f['RemarkName']] = f['UserName']
