@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
 
-ADMIN_ID = 1
-
-# 多线程发送任务的线程数量
-SEND_MKT_MSG_THREAD_POOL_NUMBER = 10
-SEND_SYS_MSG_THREAD_POOL_NUMBER = 10
-
 SCHED_TIME = '2017/06/18 19:47:00'
 
 REMARK_PREFIX = '_$fxuid$_'  # 好友的备注前缀
@@ -18,39 +12,55 @@ SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
 DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'
 
-WELCOME_CONTENT = """
-欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
-您将在每天早上8:00收到我们为您推送的外汇市场每日概况。
-回复1获取市场概况，h获取帮助
+WELCOME_CONTENT = """欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
+您将在每天早晚8:00收到我们为您推送的外汇市场每日概况。
+
+回复
+1 获取即时市场概况
+h 获取帮助
+>>>>>>> 7173fcd... new help text
 
 当前正在调试，出现异常情况请不必在意。
 """
 
-MENU = '欢迎使用外汇小帮手\n\n' \
-       '查询市场概况请回复1\n\n' \
-       '== 分钟技术指标 ==\n' \
-       '欧元兑美元 o m\n' \
-       '英镑兑美元 y m\n' \
-       '澳元兑美元 a m\n' \
-       '新西兰元兑美元 x m\n' \
-       '美元兑加元 j m\n' \
-       '美元兑日元 r m\n\n' \
-       '== 每日概况业务 ==\n' \
-       '订阅，请回复DY\n' \
-       '退订，请回复TD\n\n' \
-       '更多帮助请回复 h\n' \
-       '人工服务请拨打 021-xxxxxxxx'
+MENU = """欢迎使用外汇小帮手
+查询市场概况请回复1
 
-HELP_MSG = '==外汇小帮手使用说明==\n\n市场概况回复1\n\n' \
-           '单个货币对请按 [货币 周期] 的格式回复\n\n' \
-           '货币可输入货币代号、拼音首字母或第一个汉字\n' \
-           '周期可输入m（分）、h（时）、d（日）\n\n' \
-           '例如，回复以下命令均可查询\n欧元兑美元（小时）\n' \
-           'o h、e h、eur h、eurusd h、欧 h\n\n' \
-           '==目前支持的货币有==\n' \
-           '欧元兑美元（o）\n英镑兑美元（y）\n澳元兑美元（a）\n' \
-           '新西兰元兑美元（x）\n美元兑加元（j）\n\n' \
-           '人工服务请拨打 021-xxxxxxxx'
+==获取分钟技术指标==
+欧元兑美元: o m
+英镑兑美元: y m
+澳元兑美元: a m
+新西兰元兑美元: x m
+美元兑加元: j m
+美元兑日元: r m
+
+查询日K线将m替换为d，小时线为h，空缺默认为小时
+
+更多帮助请回复 h
+人工服务请拨打 021-xxxxxxxx
+"""
+
+HELP_MSG = """==外汇小帮手使用说明==
+
+市场概况回复1
+
+单个货币对请按 [货币 周期] 的格式回复
+货币: 可输入货币代号、拼音首字母或第一个汉字
+周期: 可输入m(分),h(时),d(日)
+
+例子: 回复以下命令均可查询欧元兑美元（小时）
+o h、e h、eur h、eurusd h、欧 h
+
+==目前支持的货币有==
+欧元兑美元:           o
+美元兑日元:           r
+英镑兑美元:           y
+澳元兑美元:           a
+新西兰元兑美元:   x
+美元兑加元:           j
+
+人工服务请拨打 021-xxxxxxxx'
+"""
 
 # MENU =  '请回复相应指令\n\n1 市场概况\n\n ==分钟指标==\n' \
 #         '21 欧元/美元\n22 英镑/美元\n23 澳大利亚元/美元\n24 新西兰元/美元\n' \
@@ -88,8 +98,8 @@ SYS_MSG_IMG = '2'
 # REPLY_MKT_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/mkt/'
 # APP_DIR = 'F:/source_files/quant/wechat/dev/src'
 
-PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-# PROJECT_DIR = '/home/yiju/wxfx/'
+# PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
+PROJECT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
@@ -100,6 +110,6 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'root'
+SQL_PASSWORD = 'jim'
 
 SEND_NO_CHECK = False
