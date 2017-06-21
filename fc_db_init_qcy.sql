@@ -12,16 +12,15 @@ USE fx_db;
 DROP TABLE IF EXISTS t_user;
 CREATE TABLE t_user(
 _id INT PRIMARY KEY AUTO_INCREMENT,
--- _wx_user_name VARCHAR(128) NOT NULL, -- 微信username
--- _wx_unique_remark_name VARCHAR(128) NOT NULL UNIQUE, -- 备注，一定要唯一
 _fx_acc VARCHAR(128),
--- _phone varchar(20), -- 用户手机号?
--- _sex CHAR(1) NOT NULL, -- 性别 m男，f女，u未知
+_remark_id INT NOT NULL, -- 好友备注id
+_admin_id INT NOT NULL, -- 管理员id
 _subscriber CHAR(1) NOT NULL, -- 是否是订阅者
 _exit CHAR(1) NOT NULL, -- 是否离开本平台
 _enter_datetime DATETIME NOT NULL, -- 添加好友的时间
 _exit_datetime DATETIME -- 主动删除我们的时间
 );
+
 
 
 -- 用户订阅情况详细表
@@ -34,6 +33,8 @@ _datetime DATETIME NOT NULL,
 CONSTRAINT _sub_user_id_FK FOREIGN KEY(_user_id) 
 REFERENCES t_user(_id)
 );
+
+
 
 
 -- 外汇种类表
@@ -64,6 +65,8 @@ INSERT INTO t_fx (_name, _c1, _c2, _c1_chinese, _c2_chinese, _css_class)       V
 INSERT INTO t_fx (_name, _c1, _c2, _c1_chinese, _c2_chinese, _css_class)       VALUES ('USDCNH','USD','CNH','美元','离岸人民币','cnh');
 
 
+-- SELECT CONCAT('2',_id,' ',_c1_chinese,' - ',_c2_chinese,'\\n') FROM t_fx;
+
 -- 每日市场概况简表
 DROP TABLE IF EXISTS t_daily_mkt;
 CREATE TABLE t_daily_mkt(
@@ -83,7 +86,7 @@ CONSTRAINT _detail_mkt_daily_mkt_id_FK FOREIGN KEY(_daily_mkt_id)
 REFERENCES t_daily_mkt(_id),
 CONSTRAINT _detail_mkt_user_id_FK FOREIGN KEY(_user_id) 
 REFERENCES t_user(_id)
-)
+);
 
 
 -- 用户发送的消息请求表（专门管理接收消息的表）
@@ -140,4 +143,15 @@ _request_id INT UNIQUE NOT NULL,
 _reply_file_name CHAR(32) UNIQUE NOT NULL,
 CONSTRAINT _request_mkt_req_id_FK FOREIGN KEY(_request_id) 
 REFERENCES t_request(_id)
+);
+
+
+-- 系统消息表
+DROP TABLE IF EXISTS t_sys_msg;
+CREATE TABLE t_sys_msg(
+_id INT PRIMARY KEY AUTO_INCREMENT,
+_type CHAR(1) NOT NULL,
+_datetime DATETIME NOT NULL UNIQUE,
+_content TEXT,
+_admin_id INT NOT NULL
 );
