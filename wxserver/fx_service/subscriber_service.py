@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import src.main.gvars as gvars
+from .. import gvars
 
 
 class SubscriberService:

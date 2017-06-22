@@ -1,25 +1,27 @@
 # -*- coding: utf-8 -*-
 
 import datetime
-import sys
 import threading
 import time
-import itchat
-from itchat.content import *
+import sys
 
-sys.path.append('/home/yiju/wxfx/wxserver/')
-import src.fx_service.msg_service as msg_service
-import src.fx_service.subsriber_service as subscriber_service
-import src.fx_service.tech_db_service as tech_service
-import src.fx_service.user_service as user_service
-import src.params.Parameters as parameters
-from src.utils import sql_helper
-import src.main.gvars as gvars
-sys.path.append(parameters.APP_DIR)
+print(sys.path[0])
+# sys.path.append(sys.path[0])
+# sys.path.append('/home/yiju/wxfx/wxserver/wxserver')
+from .fx_service import msg_service
+from .fx_service import subscriber_service
+from .fx_service import tech_db_service as tech_service
+from .fx_service import user_service
+from . import gvars
+import itchat
+from . import parameters
+from itchat.content import *
+from .utils import sql_helper
+
+# sys.path.append(parameters.APP_DIR)
 
 # itchat.auto_login(hotReload=False)
 itchat.auto_login(enableCmdQR=2, hotReload=False)
-
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()
@@ -142,12 +144,14 @@ def send_daily_mkt_msg():
                 gvars.msg_serv.send_mkt_msg_to_subscirbers()
         time.sleep(1)
 
+
 # 更新好友列表
 def update_contact_schedule_task():
     while 1:
         time.sleep(10 * 60)
         print('每隔10分钟更新一次通讯录')
         gvars.user_serv.update_contact()
+
 
 # 开启多线程，每天早上8:00自动执行发送市场概况
 threads = []

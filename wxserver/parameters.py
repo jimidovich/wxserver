@@ -113,7 +113,7 @@ APP_DIR = PROJECT_DIR + 'wxserver/src'
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
 SQL_PASSWORD = 'jim'
-# DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
-DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
+DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
+# DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 
 SEND_NO_CHECK = False

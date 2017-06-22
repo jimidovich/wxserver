@@ -2,7 +2,7 @@
 
 import pymysql.cursors
 
-import src.params.Parameters as parameters
+from .. import parameters
 
 
 class SqlHelper:

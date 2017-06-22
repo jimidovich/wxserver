@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import time
 import random
-import src.params.Parameters as parameters
-import src.main.gvars as gvars
+import time
+
+from .. import gvars
+from .. import parameters
 
 
 class UserService:
@@ -100,7 +101,6 @@ class UserService:
         else:
             gvars.sql_helper.connect.commit()  # 事务提交
             print('UserService::add_user_into_db:事务处理成功')
-
 
     # 把新用户添加进数据库，同时设置备注名
     def __add_user_into_db_set_alias(self, user):

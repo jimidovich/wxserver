@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-import time
 import uuid
 from multiprocessing.dummy import Pool as ThreadPool
 
-import src.params.Parameters as parameters
-import src.main.gvars as gvars
+from .. import gvars
+from wxserver import parameters
 
 
 class MsgService:
