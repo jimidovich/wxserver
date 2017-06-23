@@ -5,20 +5,21 @@ import threading
 import time
 import sys
 
-print(sys.path[0])
-# sys.path.append(sys.path[0])
-# sys.path.append('/home/yiju/wxfx/wxserver/wxserver')
+import itchat
 from .fx_service import msg_service
 from .fx_service import subscriber_service
 from .fx_service import tech_db_service as tech_service
 from .fx_service import user_service
 from . import gvars
-import itchat
 from . import parameters
+parameters.DATABASE_NAME = parameters.db_names[sys.argv[1]]
+if len(sys.argv) == 3:
+    if sys.argv[2] == 'reset_all_remark':
+        parameters.NEED_INIT_REMARK_NAME = True
+
 from itchat.content import *
 from .utils import sql_helper
 
-# sys.path.append(parameters.APP_DIR)
 
 # itchat.auto_login(hotReload=False)
 itchat.auto_login(enableCmdQR=2, hotReload=False)

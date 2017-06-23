@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import sys
+import os
+
 ADMIN_ID = 1
 NEED_INIT_REMARK_NAME = False  # 是否需要先初始化所有联系人的备注
 
@@ -101,19 +104,24 @@ SYS_MSG_IMG = '2'
 # APP_DIR = 'F:/source_files/quant/wechat/dev/src'
 
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-PROJECT_DIR = '/home/yiju/wxfx/'
-DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'
-REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'
-REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'
-APP_DIR = PROJECT_DIR + 'wxserver/src'
+OUTPUT_DIR = '/home/yiju/wxfx/'
+DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+
+WXSERVER_DIR = os.path.abspath(os.path.join(sys.path[0], os.pardir))
+DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
+REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
+REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
+# APP_DIR = WXSERVER_DIR + '/wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
 SQL_PASSWORD = 'jim'
 DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
 # DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
+
+db_names = {'mikens': 'db_wxfx_mikens_testing',
+            'testing': 'db_wxfx_testing'}
 
 SEND_NO_CHECK = False

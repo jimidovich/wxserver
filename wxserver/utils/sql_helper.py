@@ -4,6 +4,7 @@ import pymysql.cursors
 
 from .. import parameters
 
+print('using mysql_db:', parameters.DATABASE_NAME)
 
 class SqlHelper:
     def __init__(self):
