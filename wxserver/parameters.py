@@ -97,32 +97,31 @@ SYS_MSG_TEXT = '1'
 SYS_MSG_IMG = '2'
 
 # =================== qcy
-PROJECT_DIR = 'D:/GitHub/wxpic_invitation/'
-# PROJECT_DIR = '/home/yiju/wxfx/'
-DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'
-REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'
-REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'
-APP_DIR = PROJECT_DIR + 'wxserver/src'
+# PROJECT_DIR = 'D:/GitHub/wxpic_invitation/'
+# # PROJECT_DIR = '/home/yiju/wxfx/'
+# DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+# FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+# MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+# DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'
+# REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'
+# REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'
+# APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 # ====================
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-# OUTPUT_DIR = '/home/yiju/wxfx/'
-# DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-# FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-# MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-#
-# WXSERVER_DIR = os.path.abspath(os.path.join(sys.path[0], os.pardir))
-# DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
-# REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
-# REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
-# APP_DIR = WXSERVER_DIR + '/wxserver/src'
+OUTPUT_DIR = '/home/yiju/wxfx/'
+DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+
+WXSERVER_DIR = os.path.abspath(os.path.join(sys.path[0], os.pardir))
+DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
+REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
+REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'root'
+SQL_PASSWORD = 'jim'
 DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
 # DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 

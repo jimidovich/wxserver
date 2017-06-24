@@ -21,8 +21,8 @@ if len(sys.argv) == 3:
 from itchat.content import *
 from .utils import sql_helper
 
-# itchat.auto_login(hotReload=False)
-itchat.auto_login(hotReload=True)
+itchat.auto_login(hotReload=False)
+# itchat.auto_login(hotReload=True)
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()
@@ -172,18 +172,3 @@ t3 = threading.Thread(target=update_contact_schedule_task, args=())
 threads.append(t3)
 t3.start()
 
-
-gvars.msg_serv.send_mkt_msg_to_subscirbers()
-
-
-
-
-# msg1 = {'MsgId': '7841120077399435007',
-#         'FromUserName': '@4536489c5528f727d7e130eea23041e7',
-#         'ToUserName': '@e9f2f84ae2c1f6cbaffd4789d0d745bfbee84c37e7700a8002b778d3e3f90c5d',
-#         'MsgType': 1, 'Content': '我', 'Status': 3,
-#         'ImgStatus': 1, 'CreateTime': 1497021416, 'VoiceLength': 0,
-#         'PlayLength': 0, 'FileName': '', 'FileSize': '',
-#         'MediaId': '', 'Url': '', 'AppMsgType': 0,
-#         'StatusNotifyCode': 0, 'StatusNotifyUserName': '',
-#         'RecommendInfo': {'UserName': '', 'NickName': '', 'QQNum': 0, 'Province': '', 'City': '', 'Content': '', 'Signature': '', 'Alias': '', 'Scene': 0, 'VerifyFlag': 0, 'AttrStatus': 0, 'Sex': 0, 'Ticket': '', 'OpCode': 0}, 'ForwardFlag': 0, 'AppInfo': {'AppID': '', 'Type': 0}, 'HasProductId': 0, 'Ticket': '', 'ImgHeight': 0, 'ImgWidth': 0, 'SubMsgType': 0, 'NewMsgId': 7841120077399435007, 'OriContent': '', 'Type': 'Text', 'Text': '我'}
