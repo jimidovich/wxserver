@@ -380,7 +380,7 @@ class MsgService:
         # 4. 多线程向所有订阅用户发送市场概况
         thread_pool_num = parameters.SEND_MKT_MSG_THREAD_POOL_NUMBER
         pool = ThreadPool(thread_pool_num)
-        pool.map(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
+        pool.map_async(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
         pool.close()
         pool.join()
 

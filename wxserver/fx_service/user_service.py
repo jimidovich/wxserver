@@ -49,20 +49,20 @@ class UserService:
         # 处理还没有处理备注的好友
         max_remark_id = 0  # 当前好友的最大编号
         if len(gvars.frd_r2u_fx) > 0:
-            max_remark_id = int(max(gvars.frd_r2u_fx.keys())[9:])
+            assert max([int(r[9:]) for r in gvars.frd_r2u_fx.keys()]) == len(gvars.frd_r2u_fx)
+            max_remark_id = len(gvars.frd_r2u_fx)
 
         new_username_l = list(set(list(gvars.frd_u2r.keys())) \
                               - set(list(gvars.frd_u2r_fx.keys())))
 
-        for i in range(len(new_username_l)):
-            username = new_username_l[i]
-            new_remark_id = max_remark_id + 1 + i
+        for username in new_username_l:
             alias_res = gvars.itchat.set_alias(
-                username, parameters.REMARK_PREFIX + str(new_remark_id))
+                username, parameters.REMARK_PREFIX + str(max_remark_id + 1))
             if '请求成功' == alias_res['BaseResponse']['ErrMsg']:
                 print('备注修改成功')
                 # 加入数据库
-                self.add_user_into_db(new_remark_id)
+                self.add_user_into_db(max_remark_id + 1)
+                max_remark_id += 1
             else:
                 print('备注修改失败')
             time.sleep(int(round(random.uniform(2, 15))))
@@ -173,14 +173,13 @@ class UserService:
         frd_u2r = {}  # 所有微信好友
         frd_r2u = {}
         for f in friend_list:
-            if len(f['RemarkName']) > 9:
-                if parameters.REMARK_PREFIX == f['RemarkName'][0:9]:
-                    frd_u2r_fx[f['UserName']] = f['RemarkName']
-                    frd_r2u_fx[f['RemarkName']] = f['UserName']
-                    if len(users_list) > 0:
-                        for u in users_list:
-                            if u['remark_id'] == int(f['RemarkName'][9:]):
-                                frd_r2dbid[f['RemarkName']] = u['id']
+            if f['RemarkName'].startswith(parameters.REMARK_PREFIX):
+                frd_u2r_fx[f['UserName']] = f['RemarkName']
+                frd_r2u_fx[f['RemarkName']] = f['UserName']
+                if len(users_list) > 0:
+                    for u in users_list:
+                        if u['remark_id'] == int(f['RemarkName'][len(parameters.REMARK_PREFIX):]):
+                            frd_r2dbid[f['RemarkName']] = u['id']
 
             frd_u2r[f['UserName']] = f['RemarkName']
             frd_r2u[f['RemarkName']] = f['UserName']
