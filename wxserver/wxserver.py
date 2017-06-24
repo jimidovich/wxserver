@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import datetime
 import threading
 import time
@@ -20,9 +21,8 @@ if len(sys.argv) == 3:
 from itchat.content import *
 from .utils import sql_helper
 
-
 # itchat.auto_login(hotReload=False)
-itchat.auto_login(enableCmdQR=2, hotReload=False)
+itchat.auto_login(hotReload=True)
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()
@@ -30,8 +30,12 @@ gvars.itchat = itchat
 gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
-if parameters.NEED_INIT_REMARK_NAME:
-    gvars.user_serv.init_remark_name()
+id_list = gvars.user_serv.get_all_user_ids_in_db(parameters.ADMIN_ID)
+if len(id_list)==0:
+    init_ok = gvars.user_serv.init_remark_name()
+    if init_ok == 0:
+        print('好友备注初始化未完成')
+        os._exit(-1)
 
 gvars.user_serv.update_contact()
 gvars.tech_db_serv = tech_service.TechDbService()
@@ -136,7 +140,7 @@ def add_friend(msg):
 def send_daily_mkt_msg():
     while 1:
         now = datetime.datetime.now()
-        if now.weekday() in [0, 6]:  # 非工作日:
+        if now.weekday() in [5, 6]:  # 非工作日:
             pass
         else:  # 工作日
             now_str = now.strftime('%Y/%m/%d %H:%M:%S')[11:]
@@ -167,6 +171,11 @@ t2.start()
 t3 = threading.Thread(target=update_contact_schedule_task, args=())
 threads.append(t3)
 t3.start()
+
+
+gvars.msg_serv.send_mkt_msg_to_subscirbers()
+
+
 
 
 # msg1 = {'MsgId': '7841120077399435007',

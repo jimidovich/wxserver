@@ -131,14 +131,26 @@ class UserService:
 
     # 初始化所有备注
     def init_remark_name(self):
+        init_ok = 1
         # 1. 得到现在微信中所有用户的备注
         gvars.friend_list = gvars.itchat.get_friends(update=True)[1:]
         # 如果该用户的备注名不是以 _$fxuid$_ 开始，就加入数据库，并为其修改备注名
         for f in gvars.friend_list:
             user_name = f['UserName']
             print(user_name + '初始化备注')
-            gvars.itchat.set_alias(user_name, parameters.INIT_REMARK_NAME)
-            time.sleep(int(round(random.uniform(2, 15))))
+            counter = 3
+            while counter>0:
+                alias_res = gvars.itchat.set_alias(user_name, parameters.INIT_REMARK_NAME)
+                if '请求成功' == alias_res['BaseResponse']['ErrMsg']:
+                    counter = -1
+                    print('初始化备注成功')
+                else:
+                    counter -= 1
+                    print('初始化备注失败,再重试%d次'%counter)
+                time.sleep(int(round(random.uniform(2, 15))))
+            if counter == 0:
+                init_ok = 0
+        return  init_ok
 
     # 从数据库中查询出当前订阅的所有用户
     def get_all_subscriber_ids(self):

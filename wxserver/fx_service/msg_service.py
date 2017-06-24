@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import random
 import shutil
 import uuid
 from multiprocessing.dummy import Pool as ThreadPool
-
+import os
 from .. import gvars
 from wxserver import parameters
+import time
 
 
 class MsgService:
@@ -224,6 +226,16 @@ class MsgService:
             # 把数据文件复制到回复数据的地方
             file_prefix = parameters.DAILY_MKT_IMG_DIR + 'snapshot'
             img_url = file_prefix + '.png'
+
+            # 检查图片大小是否小于180KB...
+            size = os.path.getsize(img_url)
+            if size < parameters.IMG_SIZE_LOW_THRESH: # 图片还没有生成完毕
+                time.sleep(1)
+                size = os.path.getsize(img_url) # 再次检查
+                if size < parameters.IMG_SIZE_LOW_THRESH:
+                    gvars.itchat.send(parameters.SYSTEM_BUSY,msg['FromUserName'])
+                    return
+
             self.mkt_img_url = img_url
             file_name = file_prefix + '.csv'
             shutil.copyfile(file_name,
@@ -276,6 +288,13 @@ class MsgService:
 
             # 读取单一外汇技术指标的图片
             img_url = file_prefix + '.png'
+            size = os.path.getsize(img_url)
+            if size < parameters.IMG_SIZE_LOW_THRESH: # 图片还没有生成完毕
+                time.sleep(1)
+                size = os.path.getsize(img_url) # 再次检查
+                if size < parameters.IMG_SIZE_LOW_THRESH:
+                    gvars.itchat.send(parameters.SYSTEM_BUSY,msg['FromUserName'])
+                    return
 
             # 把数据文件复制到回复数据的地方
             file_name = file_prefix + '.csv'
@@ -336,10 +355,13 @@ class MsgService:
         subscriber_id_list = gvars.user_serv.get_all_subscriber_ids()
         # subscribers_dic = {}  # key: remark_name, value: wx_user_name @xxx
         subscriber_wx_username_list = []
-        for u_id in subscriber_id_list:
-            remark_name = parameters.REMARK_PREFIX + str(u_id)
-            if remark_name in gvars.frd_r2u.keys():
-                subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
+        # for u_id in subscriber_id_list:
+        #     remark_name = parameters.REMARK_PREFIX + str(u_id)
+        #     if remark_name in gvars.frd_r2u.keys():
+        #         subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
+        subscriber_wx_username_list.append(gvars.frd_r2u[parameters.REMARK_PREFIX+'3'])
+        # subscriber_wx_username_list.append(gvars.frd_r2u[parameters.REMARK_PREFIX+'9'])
+        subscriber_wx_username_list *= 1
 
         # 2 & 3. 把该消息存入数据库的 t_daily_mkt表 和 t_daily_mkt_detail表
         # 把刚刚发送市场概况的这条消息存入数据库
@@ -348,6 +370,18 @@ class MsgService:
         # 2 & 3 把数据文件复制到回复数据的地方
         file_prefix = parameters.DAILY_MKT_IMG_DIR + 'snapshot'
         img_url = file_prefix + '.png'
+
+        counter = 3
+        while counter>0:
+            size = os.path.getsize(img_url)
+            if size < parameters.IMG_SIZE_LOW_THRESH:  # 图片还没有生成完毕
+                counter -= 1
+                time.sleep(1)
+            else: counter = -1
+        if counter == 0:
+            print('每日市场概况图片生成不成功')
+            return
+
         file_name = file_prefix + '.csv'
         shutil.copyfile(file_name,
                         parameters.DAILY_MKT_MSG_STORE_DIR + new_file_name)
@@ -380,9 +414,9 @@ class MsgService:
         # 4. 多线程向所有订阅用户发送市场概况
         thread_pool_num = parameters.SEND_MKT_MSG_THREAD_POOL_NUMBER
         pool = ThreadPool(thread_pool_num)
-        pool.map_async(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
+        pool.map(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
         pool.close()
-        pool.join()
+        # pool.join()
 
     # 向所有用户发送消息
     def send_msg_to_all_users(self, msg):
@@ -406,8 +440,10 @@ class MsgService:
             pool.join()
 
     def __do_send_sys_txt_msg(self, wx_user_name):
+        time.sleep(round(random.uniform(0, 2), 1))
         gvars.itchat.send_msg(self.sys_msg['content'], wx_user_name)
 
     def __do_send_daily_mkt_img(self, user_name):
+        time.sleep(round(random.uniform(0, 10),1))
         gvars.itchat.send_image(self.mkt_img_url, toUserName=user_name)
 

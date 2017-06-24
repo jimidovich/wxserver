@@ -3,7 +3,8 @@ import sys
 import os
 
 ADMIN_ID = 1
-NEED_INIT_REMARK_NAME = False  # 是否需要先初始化所有联系人的备注
+# 图片大小最低门限
+IMG_SIZE_LOW_THRESH = 180 * 1024
 
 SCHED_TIME_LIST = ['08:00:00', '20:00:00']
 
@@ -67,6 +68,8 @@ o h、e h、eur h、eurusd h、欧 h
 
 人工服务请拨打 021-xxxxxxxx"""
 
+SYSTEM_BUSY = '系统繁忙，请稍后再试'
+
 # MENU =  '请回复相应指令\n\n1 市场概况\n\n ==分钟指标==\n' \
 #         '21 欧元/美元\n22 英镑/美元\n23 澳大利亚元/美元\n24 新西兰元/美元\n' \
 #         '25 美元/日元\n26 美元/加拿大元\n27 美元/瑞士法郎\n28 美元/挪威克朗\n' \
@@ -80,7 +83,7 @@ TEXT_MSG_TYPE = '3'  # 文本消息
 MKT_MSG_TYPE = '4'  # 请求全市场
 FX_PAIR_MSG_TYPE = '5'  # 单一品种的消息
 HELP_MSG_TYPE = '6'  # 帮助信息
-UNKONW_MSG_TYPE = '0'  # 未知消息
+UNKNOWN_MSG_TYPE = '0'  # 未知消息
 
 TD_CMD = 'TD'
 DY_CMD = 'DY'
@@ -93,31 +96,33 @@ DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 SYS_MSG_TEXT = '1'
 SYS_MSG_IMG = '2'
 
+# =================== qcy
+PROJECT_DIR = 'D:/GitHub/wxpic_invitation/'
+# PROJECT_DIR = '/home/yiju/wxfx/'
+DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
+DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'
+REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'
+REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'
+APP_DIR = PROJECT_DIR + 'wxserver/src'
 
-############### qcy windows
-# DAILY_MKT_IMG_DIR = 'D:/GitHub/wxpic/output/'
-# FX_PAIR_IMG_DIR = 'D:/GitHub/wxpic/output/'
-# MKT_IMG_DIR = 'D:/GitHub/wxpic/output/'
-# DAILY_MKT_MSG_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/mkt_msg/'
-# REPLY_FX_PAIR_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/fx_pair/'
-# REPLY_MKT_STORE_DIR = 'F:/source_files/quant/wechat/stored_data/reply_data/mkt/'
-# APP_DIR = 'F:/source_files/quant/wechat/dev/src'
-
+# ====================
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-OUTPUT_DIR = '/home/yiju/wxfx/'
-DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
-
-WXSERVER_DIR = os.path.abspath(os.path.join(sys.path[0], os.pardir))
-DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
-REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
-REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
+# OUTPUT_DIR = '/home/yiju/wxfx/'
+# DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+# FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+# MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
+#
+# WXSERVER_DIR = os.path.abspath(os.path.join(sys.path[0], os.pardir))
+# DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
+# REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
+# REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
 # APP_DIR = WXSERVER_DIR + '/wxserver/src'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
+SQL_PASSWORD = 'root'
 DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
 # DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 
