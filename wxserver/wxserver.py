@@ -21,8 +21,8 @@ if len(sys.argv) == 3:
 from itchat.content import *
 from .utils import sql_helper
 
-# itchat.auto_login(hotReload=False)
-itchat.auto_login(hotReload=True)
+itchat.auto_login(hotReload=False)
+# itchat.auto_login(hotReload=True)
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()
