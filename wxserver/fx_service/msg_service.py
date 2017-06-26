@@ -16,22 +16,10 @@ class MsgService:
         self.fx_pair_cmd_set = self.get_fx_cmd_set()  # 获取外汇对的命令
         print('MsgService::init')
 
-    #
     # # 构造获取单个货币对技术指标的命令
-    # def get_fx_pair_cmd_set(self):
-    #     cmd_set = set()
-    #     fx_pairs_list = list(gvars.fx_dic.keys())
-    #     freq_list = ['M' ,'D', 'H']
-    #     for fx in fx_pairs_list:
-    #         for freq in freq_list:
-    #             s = fx + ' ' + freq
-    #             cmd_set.add(s)
-    #     return cmd_set
-
     def get_fx_cmd_set(self):
 
         cmd_set = set()
-
         # 简写的货币对代号 e m
         l = list(self.fx_cmd_dic2.values())
         for o in l:
@@ -58,8 +46,6 @@ class MsgService:
     def __parse_msg(self, msg):
 
         req_content = msg['req_content'].upper()
-
-        # 根据内容判断是什么类型的消息
 
         # 退订请求
         if parameters.TD_CMD == req_content:
@@ -106,24 +92,6 @@ class MsgService:
             msg['fx_id'] = gvars.fx_dic[fx]['id']
             msg['freq'] = freq
 
-        # # 请求单个外汇对的技术指标
-        # elif req_content in self.fx_pair_cmd_set:
-        #     msg['request_type'] = parameters.FX_PAIR_MSG_TYPE
-        #     msg['ans_ok'] = '1'  # 已经解决问题
-        #     msg['replied'] = '1'
-        #
-        #     cont_list = req_content.split(' ')
-        #     freq = cont_list[1].upper()
-        #
-        #
-        #     fx = req_content[0:6].upper() # 检查是否有这么长...
-        #     msg['fx'] = fx
-        #     msg['fx_id'] = gvars.fx_dic[fx]['id']
-        #     freq = req_content[7].upper()
-        #     if freq == 'M' or  freq == 'H':
-        #         freq += '1'
-        #     msg['freq'] = freq.upper()
-
         # 普通文本
         else:
             msg['request_type'] = parameters.TEXT_MSG_TYPE
@@ -133,10 +101,6 @@ class MsgService:
             if req_content.upper() in ['H', 'HELP', '帮助', 'BZ']:
                 msg['request_type'] = parameters.HELP_MSG_TYPE
 
-    # 这是一个根据用户文本命令返回文本的函数
-    def __get_response_by_text_msg(self, msg):
-        return parameters.MENU
-
     # 调用itchat回复msg，同时把回复的内容存入数据库
     def __itchat_reply_save_into_db(self, msg):
         # a. 调用itchat回复
@@ -145,11 +109,6 @@ class MsgService:
             gvars.itchat.send(res_content, toUserName=msg['FromUserName'])
         else:
             gvars.itchat.send(res_content, toUserName=msg['sender_username'])
-            # msg['replied'] = '1'
-            # b. 把回复的消息存入数据库
-            # 串行提交??
-            # 把收到的消息存入数据库
-
             try:
                 # a. 插入主表
                 sql1 = "INSERT INTO t_request \
@@ -194,25 +153,21 @@ class MsgService:
         # 不是命令的文本消息（得到菜单，获取菜单，在菜单上操作等）
         elif parameters.TEXT_MSG_TYPE == request_type:
             # a. 根据规则，生成需要回复的文字
-            msg['res_content'] = self.__get_response_by_text_msg(msg)
+            msg['res_content'] = parameters.MENU
             # b. 回复消息 & 把回复的消息存入数据库
             self.__itchat_reply_save_into_db(msg)
 
         # 订阅
         elif parameters.DY_MSG_TYPE == request_type:
-            # a. 修改数据库（订阅状态）
-            gvars.sub_serv.subscribe(sender_id_in_db)
-            # b. 回复消息 & 把回复的消息存入数据库
-            res_content = parameters.DY_SUCCESS
+            gvars.sub_serv.subscribe(sender_id_in_db) # a. 修改数据库（订阅状态）
+            res_content = parameters.DY_SUCCESS # b. 回复消息 & 把回复的消息存入数据库
             msg['res_content'] = res_content
             self.__itchat_reply_save_into_db(msg)
 
         # 退订
         elif parameters.TD_MSG_TYPE == request_type:
-            # a. 修改数据库（退订状态）
-            gvars.sub_serv.unsubscribe(sender_id_in_db)
-            # b. 回复消息 & 把回复的消息存入数据库
-            res_content = parameters.TD_SUCCESS
+            gvars.sub_serv.unsubscribe(sender_id_in_db) # a. 修改数据库（退订状态）
+            res_content = parameters.TD_SUCCESS # b. 回复消息 & 把回复的消息存入数据库
             msg['res_content'] = res_content
             self.__itchat_reply_save_into_db(msg)
 
@@ -220,7 +175,6 @@ class MsgService:
         elif parameters.MKT_MSG_TYPE == request_type:
 
             print('请求市场概况')
-            # freq = msg['freq']
             new_file_name = uuid.uuid1().hex
 
             # 把数据文件复制到回复数据的地方
@@ -302,9 +256,6 @@ class MsgService:
             shutil.copyfile(file_name,
                             parameters.REPLY_FX_PAIR_STORE_DIR + new_file_name)
 
-            # 检查当前时间和市场概况图片的时间之差
-            # 如果相隔很近，则发送。否则，显示系统正在维护……???????
-
             # 调用itchat发送图片
             if parameters.SEND_NO_CHECK:
                 gvars.itchat.send_image(img_url, msg['FromUserName'])
@@ -317,7 +268,6 @@ class MsgService:
                 # (3) 把请求插入对某一外汇对的技术指标的请求记录表
 
                 try:
-                    # a. 插入主表
                     sql = "INSERT INTO t_request \
                                         (_user_id, _datetime, _content,\
                                         _request_type, _replied, _ans_ok)\
@@ -327,11 +277,9 @@ class MsgService:
                               msg['replied'], msg['ans_ok'])
                     gvars.sql_helper.cursor.execute(sql % params)
 
-                    # b. 得到主表最后一条记录的id
                     request_id = gvars.sql_helper.get_max_id_in_tb('t_request')
                     fx_id = msg['fx_id']
 
-                    # c. 从表
                     sql = "INSERT INTO t_req_res_fx_pair (_fx_id, " \
                         "_ma_period, _request_id, _reply_file_name)" \
                         " VALUES (%d, '%s' ,%d, '%s');"
@@ -353,21 +301,15 @@ class MsgService:
 
         # 1. 查询当前所有的订阅用户
         subscriber_id_list = gvars.user_serv.get_all_subscriber_ids()
-        # subscribers_dic = {}  # key: remark_name, value: wx_user_name @xxx
         subscriber_wx_username_list = []
-        # for u_id in subscriber_id_list:
-        #     remark_name = parameters.REMARK_PREFIX + str(u_id)
-        #     if remark_name in gvars.frd_r2u.keys():
-        #         subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
-        subscriber_wx_username_list.append(gvars.frd_r2u[parameters.REMARK_PREFIX+'3'])
-        # subscriber_wx_username_list.append(gvars.frd_r2u[parameters.REMARK_PREFIX+'9'])
-        subscriber_wx_username_list *= 1
-
-        # 2 & 3. 把该消息存入数据库的 t_daily_mkt表 和 t_daily_mkt_detail表
-        # 把刚刚发送市场概况的这条消息存入数据库
-        new_file_name = uuid.uuid1().hex
+        for u_id in subscriber_id_list:
+            remark_name = parameters.REMARK_PREFIX + str(u_id)
+            if remark_name in gvars.frd_r2u.keys():
+                subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
 
         # 2 & 3 把数据文件复制到回复数据的地方
+        # 2 & 3. 把该消息存入数据库的 t_daily_mkt表 和 t_daily_mkt_detail表
+        new_file_name = uuid.uuid1().hex
         file_prefix = parameters.DAILY_MKT_IMG_DIR + 'snapshot'
         img_url = file_prefix + '.png'
 
@@ -416,7 +358,6 @@ class MsgService:
         pool = ThreadPool(thread_pool_num)
         pool.map(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
         pool.close()
-        # pool.join()
 
     # 向所有用户发送消息
     def send_msg_to_all_users(self, msg):
@@ -437,10 +378,9 @@ class MsgService:
             pool = ThreadPool(thread_pool_num)
             pool.map(self.__do_send_sys_txt_msg, username_list)
             pool.close()
-            pool.join()
 
     def __do_send_sys_txt_msg(self, wx_user_name):
-        time.sleep(round(random.uniform(0, 2), 1))
+        time.sleep(round(random.uniform(0, 5), 1))
         gvars.itchat.send_msg(self.sys_msg['content'], wx_user_name)
 
     def __do_send_daily_mkt_img(self, user_name):

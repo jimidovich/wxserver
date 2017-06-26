@@ -42,7 +42,6 @@ gvars.tech_db_serv = tech_service.TechDbService()
 gvars.fx_dic = gvars.tech_db_serv.get_fx_dic()
 gvars.msg_serv = msg_service.MsgService()
 
-
 @itchat.msg_register(itchat.content.TEXT)
 def request_response(msg):
     print('got msg:', msg['Text'])
@@ -87,24 +86,16 @@ def request_response(msg):
             reply_content = '新备注应该从%s开始' % \
                             (parameters.REMARK_PREFIX + str(max_remark_id + 1))
             print(reply_content)
-            # 自己收不到自己发的消息...
-            # gvars.itchat.send(reply_content,toUserName=sender_user_name)
+            # 向文件助手发送。自己收不到自己的消息
             gvars.itchat.send(reply_content, toUserName='filehelper')
         elif 'set rname over' == req_content:
             print('手动设置备注完毕')
             # old_remark_id_set = set(list(gvars.frd_r2u_fx.keys()))
             gvars.user_serv.update_contact()
-            # new_remark_id_set = set(list(gvars.frd_r2u_fx.keys())) \
-            #                     - old_remark_id_set
-            #
+            # 还应该做的...
             # # 1. 检查前缀是否错误
             # # 2. 检查是否重复
             # # 3. 检查是否是从rid_max+1号开始编号的
-            # if len(new_remark_id_set) > 0:
-            #     for remark_name in new_remark_id_set:
-            #         r_id = int(remark_name[9:])
-            #         gvars.user_serv.add_user_into_db(r_id)
-
             gvars.auto_add_friend = True
             gvars.itchat.send('手动添加备注成功！', toUserName='filehelper')
 
@@ -129,12 +120,10 @@ def request_response(msg):
                                         time.localtime(time.time()))
         gvars.msg_serv.receive_response(msg)
 
-
 # 收到添加好友请求
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
     gvars.user_serv.receive_new_friend_request(msg)
-
 
 # 推送每天的市场概况
 def send_daily_mkt_msg():
@@ -148,7 +137,6 @@ def send_daily_mkt_msg():
             if now_str in parameters.SCHED_TIME_LIST:  # 发送
                 gvars.msg_serv.send_mkt_msg_to_subscirbers()
         time.sleep(1)
-
 
 # 更新好友列表
 def update_contact_schedule_task():
@@ -172,18 +160,3 @@ t3 = threading.Thread(target=update_contact_schedule_task, args=())
 threads.append(t3)
 t3.start()
 
-
-gvars.msg_serv.send_mkt_msg_to_subscirbers()
-
-
-
-
-# msg1 = {'MsgId': '7841120077399435007',
-#         'FromUserName': '@4536489c5528f727d7e130eea23041e7',
-#         'ToUserName': '@e9f2f84ae2c1f6cbaffd4789d0d745bfbee84c37e7700a8002b778d3e3f90c5d',
-#         'MsgType': 1, 'Content': '我', 'Status': 3,
-#         'ImgStatus': 1, 'CreateTime': 1497021416, 'VoiceLength': 0,
-#         'PlayLength': 0, 'FileName': '', 'FileSize': '',
-#         'MediaId': '', 'Url': '', 'AppMsgType': 0,
-#         'StatusNotifyCode': 0, 'StatusNotifyUserName': '',
-#         'RecommendInfo': {'UserName': '', 'NickName': '', 'QQNum': 0, 'Province': '', 'City': '', 'Content': '', 'Signature': '', 'Alias': '', 'Scene': 0, 'VerifyFlag': 0, 'AttrStatus': 0, 'Sex': 0, 'Ticket': '', 'OpCode': 0}, 'ForwardFlag': 0, 'AppInfo': {'AppID': '', 'Type': 0}, 'HasProductId': 0, 'Ticket': '', 'ImgHeight': 0, 'ImgWidth': 0, 'SubMsgType': 0, 'NewMsgId': 7841120077399435007, 'OriContent': '', 'Type': 'Text', 'Text': '我'}

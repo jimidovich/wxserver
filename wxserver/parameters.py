@@ -2,7 +2,8 @@
 import sys
 import os
 
-ADMIN_ID = 1
+
+ADMIN_ID = 1 # 管理员编号！同一家公司的不同微信号，要用不同的Admin_ID以示区别
 # 图片大小最低门限
 IMG_SIZE_LOW_THRESH = 180 * 1024
 

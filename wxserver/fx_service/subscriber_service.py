@@ -13,7 +13,6 @@ class SubscriberService:
          _operation, _datetime) VALUES (%d,'1',NOW());" % user_id
         sql2 = "UPDATE t_user SET _subscriber = '1' WHERE _id = %d;" % user_id
         gvars.sql_helper.update_with_tx([sql1, sql2])
-        # 怎么看得出来数据库已经修改成功???????????
 
     # 取消订阅
     def unsubscribe(self, user_id):

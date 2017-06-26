@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9361558a-0dbe-4570-a888-ef07088e876e" name="Default" comment="manu remark_name">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/itchat.pkl" afterPath="$PROJECT_DIR$/itchat.pkl" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/wxserver.iml" afterPath="$PROJECT_DIR$/.idea/wxserver.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/fx_service/msg_service.py" afterPath="$PROJECT_DIR$/wxserver/fx_service/msg_service.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py" afterPath="$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/fx_service/tech_db_service.py" afterPath="$PROJECT_DIR$/wxserver/fx_service/tech_db_service.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/fx_service/user_service.py" afterPath="$PROJECT_DIR$/wxserver/fx_service/user_service.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/parameters.py" afterPath="$PROJECT_DIR$/wxserver/parameters.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/wxserver/wxserver.py" afterPath="$PROJECT_DIR$/wxserver/wxserver.py" />
@@ -27,11 +26,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="msg_service.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="msg_service.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/wxserver/fx_service/msg_service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="442" column="43" lean-forward="false" selection-start-line="442" selection-start-column="43" selection-end-line="442" selection-end-column="43" />
+            <state relative-caret-position="212">
+              <caret line="389" column="0" lean-forward="true" selection-start-line="389" selection-start-column="0" selection-end-line="389" selection-end-column="0" />
               <folding>
                 <element signature="e#25#38#0" expanded="true" />
               </folding>
@@ -39,21 +38,31 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parameters.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="parameters.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wxserver/parameters.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2863">
-              <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+            <state relative-caret-position="187">
+              <caret line="132" column="0" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="upstart.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/upstart.py">
+      <file leaf-file-name="subscriber_service.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+            <state relative-caret-position="-213">
+              <caret line="5" column="24" lean-forward="true" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tech_db_service.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/wxserver/fx_service/tech_db_service.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1263">
+              <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -62,8 +71,8 @@
       <file leaf-file-name="user_service.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wxserver/fx_service/user_service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="50">
-              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="13" />
+            <state relative-caret-position="4175">
+              <caret line="167" column="16" lean-forward="true" selection-start-line="167" selection-start-column="16" selection-end-line="167" selection-end-column="16" />
               <folding>
                 <element signature="e#25#38#0" expanded="true" />
               </folding>
@@ -74,8 +83,8 @@
       <file leaf-file-name="wxserver.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/wxserver/wxserver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="175" column="25" lean-forward="false" selection-start-line="175" selection-start-column="25" selection-end-line="175" selection-end-column="25" />
+            <state relative-caret-position="100">
+              <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -116,6 +125,8 @@
       <find>slee</find>
       <find>sle</find>
       <find>random</find>
+      <find>itchat.run</find>
+      <find>busy</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -146,9 +157,12 @@
         <option value="$PROJECT_DIR$/../../utils/sql_helper.py" />
         <option value="$PROJECT_DIR$/fx_service/user_service.py" />
         <option value="$PROJECT_DIR$/fx_service/msg_service.py" />
+        <option value="$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py" />
+        <option value="$PROJECT_DIR$/wxserver/fx_service/tech_db_service.py" />
         <option value="$PROJECT_DIR$/wxserver/wxserver.py" />
-        <option value="$PROJECT_DIR$/wxserver/fx_service/msg_service.py" />
         <option value="$PROJECT_DIR$/wxserver/parameters.py" />
+        <option value="$PROJECT_DIR$/wxserver/fx_service/user_service.py" />
+        <option value="$PROJECT_DIR$/wxserver/fx_service/msg_service.py" />
       </list>
     </option>
   </component>
@@ -198,24 +212,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="wxserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wxserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wxserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="wxserver" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="fx_service" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -520,8 +516,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/gvars.py" />
-    <entry file="file://$USER_HOME$/fx_service/msg_service.py" />
     <entry file="file://$USER_HOME$/fx_service/user_service.py" />
     <entry file="file://$USER_HOME$/main_controller.py" />
     <entry file="file://$USER_HOME$/main_controller.py" />
@@ -563,30 +557,6 @@
     <entry file="file://$PROJECT_DIR$/parameters.py" />
     <entry file="file://$PROJECT_DIR$/wxserver.py" />
     <entry file="file://$PROJECT_DIR$/fx_service/msg_service.py" />
-    <entry file="file://$PROJECT_DIR$/upstart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wxserver/wxserver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="175" column="25" lean-forward="false" selection-start-line="175" selection-start-column="25" selection-end-line="175" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/ProgramData/Anaconda3/Lib/multiprocessing/pool.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="118">
@@ -595,31 +565,79 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/user_service.py">
+    <entry file="file://$PROJECT_DIR$/upstart.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="50">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="13" />
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wxserver/gvars.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-200">
+          <caret line="7" column="19" lean-forward="true" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wxserver/wxserver.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/ProgramData/Anaconda3/Lib/multiprocessing/dummy/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="114" column="4" lean-forward="false" selection-start-line="114" selection-start-column="4" selection-end-line="114" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/user_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4175">
+          <caret line="167" column="16" lean-forward="true" selection-start-line="167" selection-start-column="16" selection-end-line="167" selection-end-column="16" />
           <folding>
             <element signature="e#25#38#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/msg_service.py">
+    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/tech_db_service.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="442" column="43" lean-forward="false" selection-start-line="442" selection-start-column="43" selection-end-line="442" selection-end-column="43" />
-          <folding>
-            <element signature="e#25#38#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-1263">
+          <caret line="6" column="0" lean-forward="true" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/subscriber_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-213">
+          <caret line="5" column="24" lean-forward="true" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/wxserver/parameters.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2863">
-          <caret line="9" column="0" lean-forward="true" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
+        <state relative-caret-position="187">
+          <caret line="132" column="0" lean-forward="false" selection-start-line="132" selection-start-column="0" selection-end-line="132" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/wxserver/fx_service/msg_service.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="389" column="0" lean-forward="true" selection-start-line="389" selection-start-column="0" selection-end-line="389" selection-end-column="0" />
+          <folding>
+            <element signature="e#25#38#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

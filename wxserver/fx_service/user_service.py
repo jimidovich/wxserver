@@ -68,7 +68,6 @@ class UserService:
             time.sleep(int(round(random.uniform(2, 15))))
 
         self.update_friend_in_RAM()
-        # 查询数据库中所有r_id
         # 如果gvars.frd_r2u_fx.keys()有不存在与数据库中的id，插入数据库
         user_id_in_db = self.get_all_user_ids_in_db(parameters.ADMIN_ID)
         user_rname_in_db = set()
@@ -108,19 +107,11 @@ class UserService:
         sql = "INSERT INTO t_user (_subscriber, _fx_acc,\
          _exit, _enter_datetime, _exit_datetime)\
         VALUES ('1','','0',NOW(),NOW());"
-        # 1. 向数据库添加1名用户
-        gvars.sql_helper.update(sql)
 
-        # 如果同时 inserst 进去了怎么办??
-        # 2. 得到该用户的id
-        # 就算只有一个数据库，也要开串行执行!!
-        # sql = "SELECT _id FROM t_user ORDER BY _id DESC LIMIT 0,1;"
-        # max_id = gvars.sql_helper.query(sql)[0][0]
-        max_id = gvars.sql_helper.get_max_id_in_tb('t_user')
+        gvars.sql_helper.update(sql) # 1. 向数据库添加1名用户
+        max_id = gvars.sql_helper.get_max_id_in_tb('t_user') # 2. 得到该用户的id
         user['remark_name'] = max_id
-
-        # 3. 订阅表中开启订阅模式
-        gvars.sub_serv.subscribe(max_id)
+        gvars.sub_serv.subscribe(max_id) # 3. 订阅表中开启订阅模式
 
         # 4. 修改微信联系人的备注
         new_remark_name = parameters.REMARK_PREFIX + str(max_id)
@@ -212,7 +203,6 @@ class UserService:
         gvars.mix_friend_list = friend_list[1:]  # 含有 现有的 + 删除的
         gvars.me = {}
         gvars.me['user_name'] = friend_list[0]['UserName']
-
         gvars.friend_list = gvars.mix_friend_list  # 现在含有 现有的 + 删除的
 
         self.update_frd_dic_by_frd_list(gvars.friend_list)
