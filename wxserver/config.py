@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
 import os
+import sys
 
-
-ADMIN_ID = 1 # 管理员编号！同一家公司的不同微信号，要用不同的Admin_ID以示区别
+ADMIN_ID = 1  # 管理员编号！同一家公司的不同微信号，要用不同的Admin_ID以示区别
 # 图片大小最低门限
 IMG_SIZE_LOW_THRESH = 180 * 1024
 
@@ -18,7 +17,6 @@ REMARK_PREFIX = '_$fxuid$_'  # 好友的备注前缀
 TEST_DROPPED_FRIENDS_CHATROOM = 'TEST_DROPPED_FRIENDS_CHATROOM'
 SET_REMARK_NAME_TIME_SLEEP_SECONDS = 10
 SEND_DAILY_MKT_MSG_TIME_SLEEP_SECONDS = 0.5
-
 
 DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xxx。退订请回复TD。'
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'

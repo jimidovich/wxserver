@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
 
-import os
 import datetime
+import sys
 import threading
 import time
-import sys
 
 import itchat
+from itchat.content import *
+
+from . import config
+from . import gvars
 from .fx_service import msg_service
 from .fx_service import subscriber_service
 from .fx_service import tech_db_service as tech_service
 from .fx_service import user_service
-from . import gvars
-from . import parameters
-parameters.DATABASE_NAME = parameters.db_names[sys.argv[1]]
-if len(sys.argv) == 3:
-    if sys.argv[2] == 'reset_all_remark':
-        parameters.NEED_INIT_REMARK_NAME = True
-
-from itchat.content import *
 from .utils import sql_helper
 
+config.DATABASE_NAME = config.db_names[sys.argv[1]]
+if len(sys.argv) == 3:
+    if sys.argv[2] == 'reset_all_remark':
+        config.NEED_INIT_REMARK_NAME = True
+
 itchat.auto_login(hotReload=False)
-# itchat.auto_login(hotReload=True)
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()
@@ -30,17 +29,18 @@ gvars.itchat = itchat
 gvars.sub_serv = subscriber_service.SubscriberService()
 gvars.user_serv = user_service.UserService()
 
-id_list = gvars.user_serv.get_all_user_ids_in_db(parameters.ADMIN_ID)
-if len(id_list)==0:
+id_list = gvars.user_serv.get_all_user_ids_in_db(config.ADMIN_ID)
+if len(id_list) == 0:
     init_ok = gvars.user_serv.init_remark_name()
     if init_ok == 0:
         print('好友备注初始化未完成')
-        os._exit(-1)
+        sys.exit(-1)
 
 gvars.user_serv.update_contact()
 gvars.tech_db_serv = tech_service.TechDbService()
 gvars.fx_dic = gvars.tech_db_serv.get_fx_dic()
 gvars.msg_serv = msg_service.MsgService()
+
 
 @itchat.msg_register(itchat.content.TEXT)
 def request_response(msg):
@@ -59,20 +59,20 @@ def request_response(msg):
         elif 'all welcome' == req_content:
             print('向所有用户发送welcome')
             msg = {}
-            msg['msg_type'] = parameters.SYS_MSG_TEXT
-            msg['content'] = parameters.WELCOME_CONTENT
+            msg['msg_type'] = config.SYS_MSG_TEXT
+            msg['content'] = config.WELCOME_CONTENT
             gvars.msg_serv.send_msg_to_all_users(msg)
         elif 'all menu' == req_content:
             print('向所有用户发送菜单')
             msg = {}
-            msg['msg_type'] = parameters.SYS_MSG_TEXT
-            msg['content'] = parameters.MENU
+            msg['msg_type'] = config.SYS_MSG_TEXT
+            msg['content'] = config.MENU
             gvars.msg_serv.send_msg_to_all_users(msg)
         elif 'all h' == req_content:
             print('向所有用户发送帮助')
             msg = {}
-            msg['msg_type'] = parameters.SYS_MSG_TEXT
-            msg['content'] = parameters.HELP_MSG
+            msg['msg_type'] = config.SYS_MSG_TEXT
+            msg['content'] = config.HELP_MSG
             gvars.msg_serv.send_msg_to_all_users(msg)
         elif 'update friend' == req_content:
             print('立即更新用户信息')
@@ -84,7 +84,7 @@ def request_response(msg):
             if len(gvars.frd_r2u_fx) > 0:
                 max_remark_id = int(max(gvars.frd_r2u_fx.keys())[9:])
             reply_content = '新备注应该从%s开始' % \
-                            (parameters.REMARK_PREFIX + str(max_remark_id + 1))
+                            (config.REMARK_PREFIX + str(max_remark_id + 1))
             print(reply_content)
             # 向文件助手发送。自己收不到自己的消息
             gvars.itchat.send(reply_content, toUserName='filehelper')
@@ -105,25 +105,28 @@ def request_response(msg):
                     content = req_content[9:]
                     print('向所有用户发送文本消息:' + content)
                     msg = {}
-                    msg['msg_type'] = parameters.SYS_MSG_TEXT
+                    msg['msg_type'] = config.SYS_MSG_TEXT
                     msg['content'] = content
                     gvars.msg_serv.send_msg_to_all_users(msg)
 
     # 收到用户发送的消息
     else:
-        print('[收到消息] ' + msg['Text'])
         msg['remark_name'] = gvars.frd_u2r_fx[sender_user_name]
         msg['remark_id'] = int(msg['remark_name'][9:])  # 备注
         msg['sender_id_in_db'] = gvars.frd_r2dbid[msg['remark_name']]  # 数据库中用户id
         msg['sender_username'] = sender_user_name  # wx的username
         msg['req_time'] = time.strftime('%Y-%m-%d %H:%M:%S',
                                         time.localtime(time.time()))
+        print('[收到消息 from {}] <{}> {}'.format(
+            msg['remark_name'], msg['req_time'], msg['Text']))
         gvars.msg_serv.receive_response(msg)
+
 
 # 收到添加好友请求
 @itchat.msg_register(FRIENDS)
 def add_friend(msg):
     gvars.user_serv.receive_new_friend_request(msg)
+
 
 # 推送每天的市场概况
 def send_daily_mkt_msg():
@@ -134,9 +137,10 @@ def send_daily_mkt_msg():
         else:  # 工作日
             now_str = now.strftime('%Y/%m/%d %H:%M:%S')[11:]
             # print(now_str)
-            if now_str in parameters.SCHED_TIME_LIST:  # 发送
+            if now_str in config.SCHED_TIME_LIST:  # 发送
                 gvars.msg_serv.send_mkt_msg_to_subscirbers()
         time.sleep(1)
+
 
 # 更新好友列表
 def update_contact_schedule_task():
@@ -159,4 +163,3 @@ t2.start()
 t3 = threading.Thread(target=update_contact_schedule_task, args=())
 threads.append(t3)
 t3.start()
-

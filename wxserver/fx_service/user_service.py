@@ -4,7 +4,7 @@ import random
 import time
 
 from .. import gvars
-from .. import parameters
+from .. import config
 
 
 class UserService:
@@ -57,7 +57,7 @@ class UserService:
 
         for username in new_username_l:
             alias_res = gvars.itchat.set_alias(
-                username, parameters.REMARK_PREFIX + str(max_remark_id + 1))
+                username, config.REMARK_PREFIX + str(max_remark_id + 1))
             if '请求成功' == alias_res['BaseResponse']['ErrMsg']:
                 print('备注修改成功')
                 # 加入数据库
@@ -69,7 +69,7 @@ class UserService:
 
         self.update_friend_in_RAM()
         # 如果gvars.frd_r2u_fx.keys()有不存在与数据库中的id，插入数据库
-        user_id_in_db = self.get_all_user_ids_in_db(parameters.ADMIN_ID)
+        user_id_in_db = self.get_all_user_ids_in_db(config.ADMIN_ID)
         user_rname_in_db = set()
         for uid in user_id_in_db:
             if uid in gvars.frd_dbid2r.keys():
@@ -87,7 +87,7 @@ class UserService:
                   "_remark_id,_admin_id, _exit, _enter_datetime," \
                   "_exit_datetime) VALUES ('1','',%d,%d,'0',NOW(),NOW());"
 
-            param = (remark_id, parameters.ADMIN_ID)
+            param = (remark_id, config.ADMIN_ID)
             gvars.sql_helper.cursor.execute(sql % param)
 
             # b. 得到主表最后一条记录的id
@@ -114,7 +114,7 @@ class UserService:
         gvars.sub_serv.subscribe(max_id) # 3. 订阅表中开启订阅模式
 
         # 4. 修改微信联系人的备注
-        new_remark_name = parameters.REMARK_PREFIX + str(max_id)
+        new_remark_name = config.REMARK_PREFIX + str(max_id)
         gvars.itchat.set_alias(user['user_name'], new_remark_name)
         print(user['user_name'], new_remark_name)
 
@@ -131,7 +131,7 @@ class UserService:
             print(user_name + '初始化备注')
             counter = 3
             while counter>0:
-                alias_res = gvars.itchat.set_alias(user_name, parameters.INIT_REMARK_NAME)
+                alias_res = gvars.itchat.set_alias(user_name, config.INIT_REMARK_NAME)
                 if '请求成功' == alias_res['BaseResponse']['ErrMsg']:
                     counter = -1
                     print('初始化备注成功')
@@ -163,12 +163,12 @@ class UserService:
             username = msg['RecommendInfo']['UserName']
             self.update_contact()
             # 3. 向好友发送welcome的消息
-            gvars.itchat.send_msg(parameters.WELCOME_CONTENT, username)
+            gvars.itchat.send_msg(config.WELCOME_CONTENT, username)
         else:  # 手动添加好友
             pass
 
     def update_frd_dic_by_frd_list(self, friend_list):
-        users_list = self.get_all_users_in_db(parameters.ADMIN_ID)
+        users_list = self.get_all_users_in_db(config.ADMIN_ID)
         frd_r2dbid = {}
         frd_dbid2r = {}
         frd_u2r_fx = {}  # 已经设置好备注的，有后缀fx
@@ -176,12 +176,12 @@ class UserService:
         frd_u2r = {}  # 所有微信好友
         frd_r2u = {}
         for f in friend_list:
-            if f['RemarkName'].startswith(parameters.REMARK_PREFIX):
+            if f['RemarkName'].startswith(config.REMARK_PREFIX):
                 frd_u2r_fx[f['UserName']] = f['RemarkName']
                 frd_r2u_fx[f['RemarkName']] = f['UserName']
                 if len(users_list) > 0:
                     for u in users_list:
-                        if u['remark_id'] == int(f['RemarkName'][len(parameters.REMARK_PREFIX):]):
+                        if u['remark_id'] == int(f['RemarkName'][len(config.REMARK_PREFIX):]):
                             frd_r2dbid[f['RemarkName']] = u['id']
 
             frd_u2r[f['UserName']] = f['RemarkName']

@@ -2,9 +2,10 @@
 
 import pymysql.cursors
 
-from .. import parameters
+from .. import config
 
-print('using mysql_db:', parameters.DATABASE_NAME)
+print('using mysql_db:', config.DATABASE_NAME)
+
 
 class SqlHelper:
     def __init__(self):
@@ -12,9 +13,9 @@ class SqlHelper:
         connect = pymysql.Connect(
             host='localhost',
             port=3306,
-            user=parameters.SQL_USER_NAME,
-            passwd=parameters.SQL_PASSWORD,
-            db=parameters.DATABASE_NAME,
+            user=config.SQL_USER_NAME,
+            passwd=config.SQL_PASSWORD,
+            db=config.DATABASE_NAME,
             charset='utf8'
         )
         self.connect = connect

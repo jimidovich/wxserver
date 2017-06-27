@@ -7,13 +7,15 @@ user_serv = None
 msg_serv = None
 tech_db_serv = None
 
-mix_friend_list = None  # 所有的 (现有的 + 删除的)
-friend_list = None
-frd_u2r = None  # all remark_name -> wx username
-frd_r2u = None
-me = None
 fx_dic = None
 
+me = None
+
+mix_friend_list = None  # 所有的 (现有的 + 删除的)
+friend_list = None
+
+frd_u2r = None  # all remark_name -> wx username
+frd_r2u = None
 frd_r2u_fx = None  # remark_name with fx_prefix -> wx username
 frd_u2r_fx = None
 
