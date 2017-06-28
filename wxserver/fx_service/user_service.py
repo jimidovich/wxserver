@@ -104,9 +104,9 @@ class UserService:
     # 把新用户添加进数据库，同时设置备注名
     def __add_user_into_db_set_alias(self, user):
         print('UserService::__add_user_into_db_set_alias')
-        sql = "INSERT INTO t_user (_is_subscriber, _fx_acc,\
-         _is_exit, _enter_datetime, _exit_datetime)\
-        VALUES ('1','','0',NOW(),NOW());"
+        sql = ("INSERT INTO t_user "
+               "(_is_subscriber, _fx_acc, _is_exit, _enter_datetime, _exit_datetime) VALUES "
+               "('1','','0',NOW(),NOW());")
 
         gvars.sql_helper.update(sql) # 1. 向数据库添加1名用户
         max_id = gvars.sql_helper.get_max_id_in_tb('t_user') # 2. 得到该用户的id

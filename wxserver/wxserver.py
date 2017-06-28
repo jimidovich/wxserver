@@ -10,18 +10,20 @@ from itchat.content import *
 
 from . import config
 from . import gvars
-from .fx_service import msg_service
-from .fx_service import subscriber_service
-from .fx_service import tech_db_service as tech_service
-from .fx_service import user_service
-from .utils import sql_helper
 
 config.DATABASE_NAME = config.db_names[sys.argv[1]]
 # if len(sys.argv) == 3:
 #     if sys.argv[2] == 'reset_all_remark':
 #         config.NEED_INIT_REMARK_NAME = True
 
-itchat.auto_login(hotReload=False)
+from .fx_service import msg_service
+from .fx_service import subscriber_service
+from .fx_service import tech_db_service as tech_service
+from .fx_service import user_service
+from .utils import sql_helper
+
+
+itchat.auto_login(enableCmdQR=2, hotReload=False)
 
 # 定义跨模块全局变量
 gvars.sql_helper = sql_helper.SqlHelper()

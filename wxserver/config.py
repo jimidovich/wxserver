@@ -22,7 +22,7 @@ DY_SUCCESS = '外汇市场概况订阅成功！您将在每天早上8:00收到xx
 TD_SUCCESS = '已成功取消订阅消息，感谢您的使用！重新开启订阅请回复DY。'
 
 WELCOME_CONTENT = """欢迎使用外汇跟踪机器人！已为您订阅外汇市场每日概况。
-您将在每天早晚8:00收到我们为您推送的外汇市场每日概况。
+您将在每天早晚收到我们为您推送的外汇市场每日概况。
 
 回复
 1 获取即时市场概况
@@ -100,8 +100,8 @@ SYS_MSG_IMG = '2'
 
 # ====================
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-OUTPUT_DIR = 'D:/GitHub/wxpic_invitation/'
-# OUTPUT_DIR = '/home/yiju/wxfx/'
+# OUTPUT_DIR = 'D:/GitHub/wxpic_invitation/'
+OUTPUT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
@@ -113,8 +113,9 @@ REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'root'
-DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
+SQL_PASSWORD = 'jim'
+DATABASE_NAME = None
+# DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
 # DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 
 db_names = {'mikens': 'db_wxfx_mikens_testing',

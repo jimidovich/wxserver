@@ -307,7 +307,7 @@ class MsgService:
 
         # 单线程向订阅用户发送图片
         f_fail = []
-        for i in range(len(subscriber_id_list)):
+        for i in range(31, len(subscriber_id_list)):
             sub_user_id = subscriber_id_list[i]
             username = subscriber_wx_username_list[i]
             try:
@@ -320,7 +320,7 @@ class MsgService:
                     else:
                         counter = -1
                         break
-                if counter == 1:
+                if counter == -1:
                     # 发图片
                     gvars.itchat.send_image(img_url, toUserName=username)
                     # 把数据文件复制到回复数据的地方，把记录存入数据库
@@ -331,7 +331,7 @@ class MsgService:
                            "(_datetime, _user_id, _file_name) VALUES "
                            "(NOW(), %d, %s);" % (sub_user_id, new_file_name))
                     gvars.sql_helper.cursor.execute(sql)
-                    time.sleep(round(random.uniform(2, 6), 1))
+                    time.sleep(round(random.uniform(5, 7), 1))
                 else:
                     print('每日市场概况图片生成不成功')
             except:
