@@ -24,8 +24,8 @@ class UserService:
                 item['fx_acc'] = o[1]
                 item['remark_id'] = o[2]
                 item['admin_id'] = o[3]
-                item['subscriber'] = o[4]
-                item['exit'] = o[5]
+                item['is_subscriber'] = o[4]
+                item['is_exit'] = o[5]
                 user_list.append(item)
         return user_list
 
@@ -83,8 +83,8 @@ class UserService:
     def add_user_into_db(self, remark_id):
         try:
             # a. 用户表
-            sql = "INSERT INTO t_user (_subscriber, _fx_acc," \
-                  "_remark_id,_admin_id, _exit, _enter_datetime," \
+            sql = "INSERT INTO t_user (_is_subscriber, _fx_acc," \
+                  "_remark_id,_admin_id, _is_exit, _enter_datetime," \
                   "_exit_datetime) VALUES ('1','',%d,%d,'0',NOW(),NOW());"
 
             param = (remark_id, config.ADMIN_ID)
@@ -104,8 +104,8 @@ class UserService:
     # 把新用户添加进数据库，同时设置备注名
     def __add_user_into_db_set_alias(self, user):
         print('UserService::__add_user_into_db_set_alias')
-        sql = "INSERT INTO t_user (_subscriber, _fx_acc,\
-         _exit, _enter_datetime, _exit_datetime)\
+        sql = "INSERT INTO t_user (_is_subscriber, _fx_acc,\
+         _is_exit, _enter_datetime, _exit_datetime)\
         VALUES ('1','','0',NOW(),NOW());"
 
         gvars.sql_helper.update(sql) # 1. 向数据库添加1名用户
@@ -125,8 +125,9 @@ class UserService:
         init_ok = 1
         # 1. 得到现在微信中所有用户的备注
         gvars.friend_list = gvars.itchat.get_friends(update=True)[1:]
-        # 如果该用户的备注名不是以 _$fxuid$_ 开始，就加入数据库，并为其修改备注名
         for f in gvars.friend_list:
+            if f['RemarkName'] == config.INIT_REMARK_NAME:
+                continue
             user_name = f['UserName']
             print(user_name + '初始化备注')
             counter = 3
@@ -145,7 +146,7 @@ class UserService:
 
     # 从数据库中查询出当前订阅的所有用户
     def get_all_subscriber_ids(self):
-        sql = "SELECT _id FROM t_user WHERE _subscriber = '1';"
+        sql = "SELECT _id FROM t_user WHERE _is_subscriber = '1';"
         id_list = []
         rs = gvars.sql_helper.query(sql)
         if len(rs) > 0:

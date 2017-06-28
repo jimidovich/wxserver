@@ -152,7 +152,7 @@ class MsgService:
         # 不是命令的文本消息（得到菜单，获取菜单，在菜单上操作等）
         elif config.TEXT_MSG_TYPE == request_type:
             # a. 根据规则，生成需要回复的文字
-            msg['res_content'] = config.MENU
+            msg['res_content'] = config.CMD_ERROR
             # b. 回复消息 & 把回复的消息存入数据库
             self.__itchat_reply_save_into_db(msg)
 
@@ -301,58 +301,41 @@ class MsgService:
             if remark_name in gvars.frd_r2u.keys():
                 subscriber_wx_username_list.append(gvars.frd_r2u[remark_name])
 
-        # 2 & 3 把数据文件复制到回复数据的地方
-        # 2 & 3. 把该消息存入数据库的 t_daily_mkt表 和 t_daily_mkt_detail表
-        new_file_name = uuid.uuid1().hex
         file_prefix = config.DAILY_MKT_IMG_DIR + 'snapshot'
         img_url = file_prefix + '.png'
-
-        counter = 3
-        while counter > 0:
-            size = os.path.getsize(img_url)
-            if size < config.IMG_SIZE_LOW_THRESH:  # 图片还没有生成完毕
-                counter -= 1
-                time.sleep(1)
-            else:
-                counter = -1
-        if counter == 0:
-            print('每日市场概况图片生成不成功')
-            return
-
         file_name = file_prefix + '.csv'
-        shutil.copyfile(file_name,
-                        config.DAILY_MKT_MSG_STORE_DIR + new_file_name)
-        self.mkt_img_url = img_url
 
-        try:
-            # a. 哪一条市场概况
-            sql = ("INSERT INTO t_daily_mkt (_datetime, _file_name) VALUES "
-                   "(NOW(), '%s');" % (new_file_name))
-            gvars.sql_helper.cursor.execute(sql)
-
-            # b. 每日市场概况消息记录表的id是多少
-            max_id = gvars.sql_helper.get_max_id_in_tb('t_daily_mkt')
-
-            # c. 向哪些用户发送了
-            sql = ""
-            for sub_user_id in subscriber_id_list:
-                sql += ("INSERT INTO t_daily_mkt_detail " 
-                        "(_daily_mkt_id, _user_id) VALUES " 
-                        "(%d, %d);" % (max_id, sub_user_id))
-            gvars.sql_helper.cursor.execute(sql)
-
-        except Exception as e:
-            gvars.sql_helper.connect.rollback()  # 事务回滚
-            print('MsgService::send_mkt_msg_to_subscirbers:事务处理失败', e)
-        else:
-            gvars.sql_helper.connect.commit()  # 事务提交
-            print('MsgService::send_mkt_msg_to_subscirbers:事务处理成功')
-
-        # 4. 多线程向所有订阅用户发送市场概况
-        thread_pool_num = config.SEND_MKT_MSG_THREAD_POOL_NUMBER
-        pool = ThreadPool(thread_pool_num)
-        pool.map(self.__do_send_daily_mkt_img, subscriber_wx_username_list)
-        pool.close()
+        # 单线程向订阅用户发送图片
+        f_fail = []
+        for i in range(len(subscriber_id_list)):
+            sub_user_id = subscriber_id_list[i]
+            username = subscriber_wx_username_list[i]
+            try:
+                counter = 3
+                while counter > 0:
+                    size = os.path.getsize(img_url)
+                    if size < config.IMG_SIZE_LOW_THRESH:  # 图片还没有生成完毕
+                        counter -= 1
+                        time.sleep(1)
+                    else:
+                        counter = -1
+                        break
+                if counter == 1:
+                    # 发图片
+                    gvars.itchat.send_image(img_url, toUserName=username)
+                    # 把数据文件复制到回复数据的地方，把记录存入数据库
+                    new_file_name = uuid.uuid1().hex
+                    shutil.copyfile(file_name,
+                                    config.DAILY_MKT_MSG_STORE_DIR + new_file_name)
+                    sql = ("INSERT INTO t_daily_mkt "
+                           "(_datetime, _user_id, _file_name) VALUES "
+                           "(NOW(), %d, %s);" % (sub_user_id, new_file_name))
+                    gvars.sql_helper.cursor.execute(sql)
+                    time.sleep(round(random.uniform(2, 6), 1))
+                else:
+                    print('每日市场概况图片生成不成功')
+            except:
+                f_fail.append(username)
 
     # 向所有用户发送消息
     def send_msg_to_all_users(self, msg):
@@ -377,7 +360,3 @@ class MsgService:
     def __do_send_sys_txt_msg(self, wx_user_name):
         time.sleep(round(random.uniform(0, 5), 1))
         gvars.itchat.send_msg(self.sys_msg['content'], wx_user_name)
-
-    def __do_send_daily_mkt_img(self, user_name):
-        time.sleep(round(random.uniform(0, 10), 1))
-        gvars.itchat.send_image(self.mkt_img_url, toUserName=user_name)

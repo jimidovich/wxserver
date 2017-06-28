@@ -15,8 +15,8 @@ _id INT PRIMARY KEY AUTO_INCREMENT,
 _fx_acc VARCHAR(128),
 _remark_id INT NOT NULL, -- 好友备注id
 _admin_id INT NOT NULL, -- 管理员id
-_subscriber CHAR(1) NOT NULL, -- 是否是订阅者
-_exit CHAR(1) NOT NULL, -- 是否离开本平台
+_is_subscriber CHAR(1) NOT NULL, -- 是否是订阅者
+_is_exit CHAR(1) NOT NULL, -- 是否离开本平台
 _enter_datetime DATETIME NOT NULL, -- 添加好友的时间
 _exit_datetime DATETIME -- 主动删除我们的时间
 );
@@ -65,26 +65,14 @@ INSERT INTO t_fx (_name, _c1, _c2, _c1_chinese, _c2_chinese, _css_class)       V
 INSERT INTO t_fx (_name, _c1, _c2, _c1_chinese, _c2_chinese, _css_class)       VALUES ('USDCNH','USD','CNH','美元','离岸人民币','cnh');
 
 
--- SELECT CONCAT('2',_id,' ',_c1_chinese,' - ',_c2_chinese,'\\n') FROM t_fx;
-
--- 每日市场概况简表
+-- 每天推送的市场概况记录表
 DROP TABLE IF EXISTS t_daily_mkt;
 CREATE TABLE t_daily_mkt(
 _id INT PRIMARY KEY AUTO_INCREMENT,
-_datetime DATETIME NOT NULL,
-_file_name CHAR(32) UNIQUE NOT NULL
-);
-
-
--- 每天推送的市场概况消息详细表
-DROP TABLE IF EXISTS t_daily_mkt_detail;
-CREATE TABLE t_daily_mkt_detail(
-_id INT PRIMARY KEY AUTO_INCREMENT,
-_daily_mkt_id INT NOT NULL,
+_datetime DATETIME UNIQUE NOT NULL,
+_file_name CHAR(32) UNIQUE NOT NULL,
 _user_id INT NOT NULL,
-CONSTRAINT _detail_mkt_daily_mkt_id_FK FOREIGN KEY(_daily_mkt_id) 
-REFERENCES t_daily_mkt(_id),
-CONSTRAINT _detail_mkt_user_id_FK FOREIGN KEY(_user_id) 
+CONSTRAINT _daily_mkt_user_id_FK FOREIGN KEY(_user_id) 
 REFERENCES t_user(_id)
 );
 

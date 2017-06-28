@@ -69,6 +69,8 @@ o h、e h、eur h、eurusd h、欧 h
 
 SYSTEM_BUSY = '系统繁忙，请稍后再试'
 
+CMD_ERROR = '命令格式有误，您可以回复h获取帮助'
+
 # MENU =  '请回复相应指令\n\n1 市场概况\n\n ==分钟指标==\n' \
 #         '21 欧元/美元\n22 英镑/美元\n23 澳大利亚元/美元\n24 新西兰元/美元\n' \
 #         '25 美元/日元\n26 美元/加拿大元\n27 美元/瑞士法郎\n28 美元/挪威克朗\n' \
@@ -95,20 +97,11 @@ DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 SYS_MSG_TEXT = '1'
 SYS_MSG_IMG = '2'
 
-# =================== qcy
-# PROJECT_DIR = 'D:/GitHub/wxpic_invitation/'
-# # PROJECT_DIR = '/home/yiju/wxfx/'
-# DAILY_MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-# FX_PAIR_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-# MKT_IMG_DIR = PROJECT_DIR + 'wxpic/output/'
-# DAILY_MKT_MSG_STORE_DIR = PROJECT_DIR + 'stored_data/mkt_msg/'
-# REPLY_FX_PAIR_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/fx_pair/'
-# REPLY_MKT_STORE_DIR = PROJECT_DIR + 'stored_data/reply_data/mkt/'
-# APP_DIR = PROJECT_DIR + 'wxserver/src'
 
 # ====================
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-OUTPUT_DIR = '/home/yiju/wxfx/'
+OUTPUT_DIR = 'D:/GitHub/wxpic_invitation/'
+# OUTPUT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
 MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
@@ -120,7 +113,7 @@ REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
 
 ##########################   数据库  #############
 SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
+SQL_PASSWORD = 'root'
 DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
 # DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
 

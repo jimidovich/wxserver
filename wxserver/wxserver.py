@@ -17,9 +17,9 @@ from .fx_service import user_service
 from .utils import sql_helper
 
 config.DATABASE_NAME = config.db_names[sys.argv[1]]
-if len(sys.argv) == 3:
-    if sys.argv[2] == 'reset_all_remark':
-        config.NEED_INIT_REMARK_NAME = True
+# if len(sys.argv) == 3:
+#     if sys.argv[2] == 'reset_all_remark':
+#         config.NEED_INIT_REMARK_NAME = True
 
 itchat.auto_login(hotReload=False)
 
