@@ -10,6 +10,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 from wxserver import config
 from .. import gvars
 
+from datetime import datetime
 
 class MsgService:
     def __init__(self):
@@ -307,7 +308,7 @@ class MsgService:
 
         # 单线程向订阅用户发送图片
         f_fail = []
-        for i in range(31, len(subscriber_id_list)):
+        for i in range(len(subscriber_id_list)):
             sub_user_id = subscriber_id_list[i]
             username = subscriber_wx_username_list[i]
             try:
@@ -329,12 +330,14 @@ class MsgService:
                                     config.DAILY_MKT_MSG_STORE_DIR + new_file_name)
                     sql = ("INSERT INTO t_daily_mkt "
                            "(_datetime, _user_id, _file_name) VALUES "
-                           "(NOW(), %d, %s);" % (sub_user_id, new_file_name))
+                           "(NOW(), %d, '%s');" % (sub_user_id, new_file_name))
                     gvars.sql_helper.cursor.execute(sql)
-                    time.sleep(round(random.uniform(5, 7), 1))
+                    time.sleep(round(random.uniform(5, 6), 1))
                 else:
                     print('每日市场概况图片生成不成功')
-            except:
+            except Exception as e:
+                print(i, 'send_schedule_error')
+                print(e)
                 f_fail.append(username)
 
     # 向所有用户发送消息

@@ -2,11 +2,21 @@
 import os
 import sys
 
-ADMIN_ID = 1  # 管理员编号！同一家公司的不同微信号，要用不同的Admin_ID以示区别
+# 数据库
+SQL_USER_NAME = 'root'
+SQL_PASSWORD = 'jim'
+DATABASE_NAME = None
+
+db_names = {'mikens': 'db_wxfx_mikens_testing',
+            'testing': 'db_wxfx_testing'}
+
+# 管理员编号！同一家公司的不同微信号，要用不同的Admin_ID以示区别
+ADMIN_ID = 1
+
 # 图片大小最低门限
 IMG_SIZE_LOW_THRESH = 180 * 1024
 
-SCHED_TIME_LIST = ['08:00:00', '20:00:00']
+SCHED_TIME_LIST = ['08:00:00', '12:00:00', '20:00:00']
 
 # 多线程发送任务的线程数量
 SEND_MKT_MSG_THREAD_POOL_NUMBER = 10
@@ -71,19 +81,13 @@ SYSTEM_BUSY = '系统繁忙，请稍后再试'
 
 CMD_ERROR = '命令格式有误，您可以回复h获取帮助'
 
-# MENU =  '请回复相应指令\n\n1 市场概况\n\n ==分钟指标==\n' \
-#         '21 欧元/美元\n22 英镑/美元\n23 澳大利亚元/美元\n24 新西兰元/美元\n' \
-#         '25 美元/日元\n26 美元/加拿大元\n27 美元/瑞士法郎\n28 美元/挪威克朗\n' \
-#         '29 美元/瑞典克朗\n210 美元/土耳其里拉\n211 美元/墨西哥比索\n'\
-#         '212 美元/南非兰特\n213 美元/人民币(离岸)\n\n' \
-#         '==每日市场概况业务==\nDY 订阅每日市场概况\nTD 退订每日市场概况'
 
-DY_MSG_TYPE = '1'  # 订阅
-TD_MSG_TYPE = '2'  # 退订
-TEXT_MSG_TYPE = '3'  # 文本消息
-MKT_MSG_TYPE = '4'  # 请求全市场
+DY_MSG_TYPE = '1'       # 订阅
+TD_MSG_TYPE = '2'       # 退订
+TEXT_MSG_TYPE = '3'     # 文本消息
+MKT_MSG_TYPE = '4'      # 请求全市场
 FX_PAIR_MSG_TYPE = '5'  # 单一品种的消息
-HELP_MSG_TYPE = '6'  # 帮助信息
+HELP_MSG_TYPE = '6'     # 帮助信息
 UNKNOWN_MSG_TYPE = '0'  # 未知消息
 
 TD_CMD = 'TD'
@@ -93,14 +97,13 @@ SINGLE_FX_CMD = '2'
 
 DEFAULT_FREQ = 'H1'  # 默认技术指标周期
 
-############### 系统消息
+# 系统消息
 SYS_MSG_TEXT = '1'
 SYS_MSG_IMG = '2'
 
 
-# ====================
 # PROJECT_DIR = 'F:/source_files/quant/wechat/arch/wxfx/'
-# OUTPUT_DIR = 'D:/GitHub/wxpic_invitation/'
+# OUTPUT_DIR = 'D:/G绿了itHub/wxpic_invitation/'
 OUTPUT_DIR = '/home/yiju/wxfx/'
 DAILY_MKT_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
 FX_PAIR_IMG_DIR = OUTPUT_DIR + 'wxpic/output/'
@@ -111,14 +114,5 @@ DAILY_MKT_MSG_STORE_DIR = WXSERVER_DIR + '/stored_data/mkt_msg/'
 REPLY_FX_PAIR_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/fx_pair/'
 REPLY_MKT_STORE_DIR = WXSERVER_DIR + '/stored_data/reply_data/mkt/'
 
-##########################   数据库  #############
-SQL_USER_NAME = 'root'
-SQL_PASSWORD = 'jim'
-DATABASE_NAME = None
-# DATABASE_NAME = 'db_wxfx_mikens_testing'  # db_wxfx_testing, db_wxfx_mikens
-# DATABASE_NAME = 'db_wxfx_testing'  # db_wxfx_testing, db_wxfx_mikens
-
-db_names = {'mikens': 'db_wxfx_mikens_testing',
-            'testing': 'db_wxfx_testing'}
 
 SEND_NO_CHECK = False

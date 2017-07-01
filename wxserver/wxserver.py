@@ -134,7 +134,7 @@ def add_friend(msg):
 def send_daily_mkt_msg():
     while 1:
         now = datetime.datetime.now()
-        if now.weekday() in [5, 6]:  # 非工作日:
+        if now.weekday() in [1, 6]:  # 非工作日:
             pass
         else:  # 工作日
             now_str = now.strftime('%Y/%m/%d %H:%M:%S')[11:]
