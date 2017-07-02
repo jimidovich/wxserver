@@ -12,8 +12,11 @@ from . import config
 from . import gvars
 
 config.DATABASE_NAME = config.db_names[sys.argv[1]]
-# if len(sys.argv) == 3:
-#     if sys.argv[2] == 'reset_all_remark':
+if len(sys.argv) == 3:
+    config.ADMIN_ID = int(sys.argv[2])
+
+# if len(sys.argv) == 4:
+#     if sys.argv[3] == 'reset_all_remark':
 #         config.NEED_INIT_REMARK_NAME = True
 
 from .fx_service import msg_service
@@ -134,7 +137,7 @@ def add_friend(msg):
 def send_daily_mkt_msg():
     while 1:
         now = datetime.datetime.now()
-        if now.weekday() in [1, 6]:  # 非工作日:
+        if now.weekday() in [5, 6]:  # 非工作日:
             pass
         else:  # 工作日
             now_str = now.strftime('%Y/%m/%d %H:%M:%S')[11:]
