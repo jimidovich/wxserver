@@ -265,7 +265,7 @@ class MsgService:
                 # (3) 把请求插入对某一外汇对的技术指标的请求记录表
 
                 try:
-                    sql = ("INSERT INTO t_request " 
+                    sql = ("INSERT INTO t_request "
                            "(_user_id, _datetime, _content, _request_type, _replied, _ans_ok) VALUES "
                            "(%d, '%s','%s', '%s', '%s', '%s');")
                     params = (msg['sender_id_in_db'], msg['req_time'], msg['req_content'],
@@ -332,7 +332,7 @@ class MsgService:
                            "(_datetime, _user_id, _file_name) VALUES "
                            "(NOW(), %d, '%s');" % (sub_user_id, new_file_name))
                     gvars.sql_helper.cursor.execute(sql)
-                    time.sleep(round(random.uniform(5, 6), 1))
+                    time.sleep(round(random.uniform(5, 8), 1))
                 else:
                     print('每日市场概况图片生成不成功')
             except Exception as e:
@@ -361,5 +361,5 @@ class MsgService:
             pool.close()
 
     def __do_send_sys_txt_msg(self, wx_user_name):
-        time.sleep(round(random.uniform(0, 5), 1))
+        time.sleep(round(random.uniform(1, 20), 1))
         gvars.itchat.send_msg(self.sys_msg['content'], wx_user_name)

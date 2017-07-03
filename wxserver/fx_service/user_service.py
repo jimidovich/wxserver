@@ -165,6 +165,7 @@ class UserService:
             self.update_contact()
             # 3. 向好友发送welcome的消息
             gvars.itchat.send_msg(config.WELCOME_CONTENT, username)
+            gvars.itchat.send_msg(config.HELP_MSG, username)
         else:  # 手动添加好友
             pass
 
